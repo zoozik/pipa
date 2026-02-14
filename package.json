@@ -1,6 +1,6 @@
 {
   "name": "vpn-launcher",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "description": "PIPA VPN",
   "main": "./out/main/index.js",
   "author": "",
@@ -53,7 +53,10 @@
     ],
     "win": {
       "icon": "resources/icon.ico",
-      "target": ["nsis", "dir"],
+      "target": [
+        "nsis",
+        "dir"
+      ],
       "requestedExecutionLevel": "requireAdministrator"
     },
     "nsis": {
@@ -61,10 +64,15 @@
       "allowToChangeInstallationDirectory": true,
       "runAfterFinish": true,
       "createDesktopShortcut": true,
-      "installerLanguages": ["en", "ru"]
+      "installerLanguages": [
+        "en",
+        "ru"
+      ]
     },
     "publish": {
-      "provider": "github"
+      "provider": "github",
+      "owner": "zoozik",
+      "repo": "pipa"
     }
   }
 }
