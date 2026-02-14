@@ -1,6 +1,6 @@
 {
   "name": "vpn-launcher",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "description": "DFTvillage VPN",
   "main": "./out/main/index.js",
   "author": "",
