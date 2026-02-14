@@ -1,0 +1,38 @@
+{
+  "update": {
+    "to": "Обновить до {version}"
+  },
+  "header": {
+    "title": "{appName}",
+    "alwaysOnTop": "Поверх всех окон",
+    "minimizeToTray": "Свернуть в трей",
+    "close": "Закрыть"
+  },
+  "tray": {
+    "connect": "Подключиться",
+    "disconnect": "Отключиться",
+    "quit": "Выход"
+  },
+  "config": {
+    "label": "Конфиг",
+    "placeholder": "Путь к конфигу",
+    "browse": "Обзор",
+    "fileNotFound": "Файл не найден"
+  },
+  "settings": {
+    "autoStartVpn": "Автоматическое включение VPN при запуске приложения",
+    "launchAtLogin": "Добавить приложение в автозагрузку Windows"
+  },
+  "vpn": {
+    "connect": "Подключиться",
+    "disconnect": "Отключиться"
+  },
+  "chart": {
+    "download": "Загрузка",
+    "upload": "Отдача"
+  },
+  "locale": {
+    "en": "English",
+    "ru": "Русский"
+  }
+}

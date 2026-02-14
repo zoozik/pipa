@@ -1,0 +1,49 @@
+// Цвета приложения — глобальные CSS-переменные
+:root {
+  --app-shadow-offset: 16px;
+  --app-base-offset: 16px;
+
+
+  // Фоны
+  --color-bg-base: #1e1e2e;
+  --color-bg-surface: #2d2d3d;
+  --color-bg-elevated: #313244;
+  --color-bg-dark: #11111b;
+  --color-bg-transparent: transparent;
+
+  // Текст
+  --color-text-primary: #cdd6f4;
+  --color-text-muted: #a6adc8;
+  --color-text-placeholder: #6c7086;
+  --color-text-inverse: #1e1e2e;
+  --color-text-app: #fff;
+
+  // Акценты
+  --color-accent: #89b4fa;
+  --color-accent-hover: #b4befe;
+  --color-accent-pin-bg: rgba(137, 180, 250, 0.22);
+  --color-accent-pin-bg-hover: rgba(137, 180, 250, 0.32);
+  --color-accent-pin-text-hover: #b4c8f7;
+
+  // Успех / опасность / предупреждение
+  --color-success: #a6e3a1;
+  --color-success-hover: #94e2d5;
+  --color-danger: #f38ba8;
+  --color-danger-hover: #eba0ac;
+  --color-warning: #f9e2af;
+
+  // Границы и тени
+  --color-border: #45475a;
+  --color-border-transparent: transparent;
+  --color-button-hover-bg: #45475a;
+  --color-shadow: rgba(0, 0, 0, 0.5);
+
+  // График
+  --color-chart-download: #a6e3a1;
+  --color-chart-download-fill: rgba(166, 227, 161, 0.1);
+  --color-chart-upload: #f38ba8;
+  --color-chart-upload-fill: rgba(243, 139, 168, 0.1);
+  --color-chart-bg-start: #11111b;
+  --color-chart-bg-mid: #022307;
+  --color-chart-bg-end: #021c06;
+}

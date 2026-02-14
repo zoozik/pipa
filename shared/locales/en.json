@@ -1,0 +1,38 @@
+{
+  "update": {
+    "to": "Update to {version}"
+  },
+  "header": {
+    "title": "{appName}",
+    "alwaysOnTop": "Always on top",
+    "minimizeToTray": "Minimize to tray",
+    "close": "Close"
+  },
+  "tray": {
+    "connect": "Connect",
+    "disconnect": "Disconnect",
+    "quit": "Quit"
+  },
+  "config": {
+    "label": "Config",
+    "placeholder": "Path to config",
+    "browse": "Browse",
+    "fileNotFound": "File not found"
+  },
+  "settings": {
+    "autoStartVpn": "Start VPN automatically when app starts",
+    "launchAtLogin": "Add app to Windows startup"
+  },
+  "vpn": {
+    "connect": "Connect",
+    "disconnect": "Disconnect"
+  },
+  "chart": {
+    "download": "Download",
+    "upload": "Upload"
+  },
+  "locale": {
+    "en": "English",
+    "ru": "Русский"
+  }
+}
