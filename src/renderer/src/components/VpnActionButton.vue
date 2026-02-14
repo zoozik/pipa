@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import logoUrl from '@logo';
+import logoUrl from '@logo'
 
 defineProps<{
-  running: boolean;
-  disabled: boolean;
-  onToggle: () => void;
-}>();
+  running: boolean
+  disabled: boolean
+  onToggle: () => void
+}>()
 </script>
 
 <template>

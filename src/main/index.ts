@@ -24,6 +24,20 @@ process.on('unhandledRejection', (reason) => {
 
 debugLog('main process loaded')
 
+const gotSingleInstanceLock = app.requestSingleInstanceLock()
+if (!gotSingleInstanceLock) {
+  app.quit()
+  process.exit(0)
+}
+
+app.on('second-instance', () => {
+  const win = getWindow()
+  if (win) {
+    if (win.isMinimized()) win.restore()
+    win.focus()
+  }
+})
+
 let customConfigPath: string | null = null
 let trayApi: TrayApi | null = null
 
@@ -65,8 +79,14 @@ void (async () => {
   debugLog('app.whenReady() done')
 
   const settings = loadSettings()
-  if (process.platform === 'win32' || process.platform === 'darwin') {
-    app.setLoginItemSettings({ openAtLogin: settings.launchAtLogin })
+  if (app.isPackaged && (process.platform === 'win32' || process.platform === 'darwin')) {
+    const loginSettings: { openAtLogin: boolean; path?: string } = {
+      openAtLogin: settings.launchAtLogin
+    }
+    if (process.platform === 'win32') {
+      loginSettings.path = process.execPath
+    }
+    app.setLoginItemSettings(loginSettings)
   }
 
   createWindow({

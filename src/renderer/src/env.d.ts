@@ -5,6 +5,11 @@ declare module '@logo' {
   export default url
 }
 
+declare module '@Logo' {
+  const url: string
+  export default url
+}
+
 declare global {
   interface Window {
     vpn: {
@@ -16,9 +21,7 @@ declare global {
       pickConfigFile: () => Promise<{ path: string | null }>
       onLog: (callback: (payload: { line: string; stream: string }) => void) => void
       onStatus: (callback: (payload: { running: boolean; error?: string }) => void) => void
-      onNetworkStats: (
-        callback: (payload: { totalDownload: number; totalUpload: number }) => void
-      ) => void
+      onNetworkStats: (callback: (payload: { totalDownload: number; totalUpload: number }) => void) => void
       onDevElevationStatus: (callback: (payload: { elevated: boolean }) => void) => void
     }
 
@@ -27,7 +30,12 @@ declare global {
       minimizeToTray: () => Promise<void>
       toggleAlwaysOnTop: () => Promise<boolean>
       getSettings: () => Promise<{ autoStartVpn: boolean; launchAtLogin: boolean; alwaysOnTop: boolean; locale: string }>
-      setSettings: (settings: { autoStartVpn?: boolean; launchAtLogin?: boolean; alwaysOnTop?: boolean; locale?: string }) => Promise<{ autoStartVpn: boolean; launchAtLogin: boolean; alwaysOnTop: boolean; locale: string }>
+      setSettings: (settings: {
+        autoStartVpn?: boolean
+        launchAtLogin?: boolean
+        alwaysOnTop?: boolean
+        locale?: string
+      }) => Promise<{ autoStartVpn: boolean; launchAtLogin: boolean; alwaysOnTop: boolean; locale: string }>
       onUpdateDownloaded: (callback: (payload: { version: string }) => void) => void
       quitAndInstall: () => Promise<void>
     }

@@ -1,30 +1,18 @@
 <script setup lang="ts">
 const configPath = defineModel<string>('configPath', { required: true })
 defineProps<{
-  configPathError: string;
-  onInput: () => void;
-  onPickFile: () => void;
-}>();
+  configPathError: string
+  onInput: () => void
+  onPickFile: () => void
+}>()
 </script>
 
 <template>
   <div class="config-path-row">
     <label class="config-path-label">{{ $t('config.label') }}</label>
     <div class="config-path-input-row">
-      <input
-        v-model="configPath"
-        type="text"
-        class="config-path-input"
-        :placeholder="$t('config.placeholder')"
-        @input="onInput"
-        readonly
-      />
-      <button
-        type="button"
-        class="config-path-browse"
-        :aria-label="$t('config.browse')"
-        @click="onPickFile"
-      >
+      <input v-model="configPath" type="text" class="config-path-input" :placeholder="$t('config.placeholder')" readonly @input="onInput" />
+      <button type="button" class="config-path-browse" :aria-label="$t('config.browse')" @click="onPickFile">
         {{ $t('config.browse') }}
       </button>
     </div>

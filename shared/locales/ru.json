@@ -29,7 +29,11 @@
   },
   "chart": {
     "download": "Загрузка",
-    "upload": "Отдача"
+    "upload": "Отдача",
+    "sizeMb": "МБ",
+    "sizeGb": "ГБ",
+    "speedMb": "{size}/с",
+    "speedGb": "{size}/с"
   },
   "locale": {
     "en": "English",

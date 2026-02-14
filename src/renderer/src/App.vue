@@ -1,21 +1,21 @@
 <script setup lang="ts">
-import { onMounted } from 'vue';
+import { onMounted } from 'vue'
 
-import AppHeader from './components/AppHeader.vue';
-import ConfigPathRow from './components/ConfigPathRow.vue';
-import SettingsCheckboxes from './components/SettingsCheckboxes.vue';
-import VpnActionButton from './components/VpnActionButton.vue';
-import TrafficChart from './components/TrafficChart.vue';
-import LogBlock from './components/LogBlock.vue';
-import Footer from './components/Footer.vue';
+import AppHeader from './components/AppHeader.vue'
+import ConfigPathRow from './components/ConfigPathRow.vue'
+import SettingsCheckboxes from './components/SettingsCheckboxes.vue'
+import VpnActionButton from './components/VpnActionButton.vue'
+import TrafficChart from './components/TrafficChart.vue'
+import LogBlock from './components/LogBlock.vue'
+import Footer from './components/Footer.vue'
 
-import { useVpn } from './composables/useVpn';
-import { useConfigPath } from './composables/useConfigPath';
-import { useSettings } from './composables/useSettings';
+import { useVpn } from './composables/useVpn'
+import { useConfigPath } from './composables/useConfigPath'
+import { useSettings } from './composables/useSettings'
 
-const { vpnRunning, logLines, currentOutbound, logContainer, initStatus, toggleVpn, subscribeVpnEvents } = useVpn();
+const { vpnRunning, logLines, currentOutbound, logContainer, initStatus, toggleVpn, subscribeVpnEvents } = useVpn()
 
-const { configPath, configPathError, configPathValid, applyConfigPath, pickConfigFile, restoreOrLoadConfigPath } = useConfigPath();
+const { configPath, configPathError, configPathValid, applyConfigPath, pickConfigFile, restoreOrLoadConfigPath } = useConfigPath()
 
 const {
   autoStartVpn,
@@ -26,28 +26,28 @@ const {
   onAutoStartVpnChange,
   onLaunchAtLoginChange,
   onToggleAlwaysOnTop,
-  onLocaleChange,
-} = useSettings();
+  onLocaleChange
+} = useSettings()
 
 async function onClose() {
-  await window.app?.quit?.();
+  await window.app?.quit?.()
 }
 
 async function onMinimizeToTray() {
-  await window.app?.minimizeToTray?.();
+  await window.app?.minimizeToTray?.()
 }
 
 function handleLogContainerRef(el: HTMLElement | null) {
-  logContainer.value = el;
+  logContainer.value = el
 }
 
 onMounted(async () => {
-  await initStatus();
-  await restoreOrLoadConfigPath();
-  await loadSettings();
+  await initStatus()
+  await restoreOrLoadConfigPath()
+  await loadSettings()
 
-  subscribeVpnEvents();
-});
+  subscribeVpnEvents()
+})
 </script>
 
 <template>
@@ -81,10 +81,7 @@ onMounted(async () => {
 
         <TrafficChart :current-outbound="currentOutbound" />
 
-        <LogBlock
-          :log-lines="logLines"
-          :on-container-ref="handleLogContainerRef"
-        />
+        <LogBlock :log-lines="logLines" :on-container-ref="handleLogContainerRef" />
 
         <Footer />
       </div>

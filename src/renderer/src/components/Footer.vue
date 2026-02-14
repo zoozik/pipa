@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { APP_VERSION } from '@renderer/version';
-import { useUpdater } from '@renderer/composables/useUpdater';
+import { APP_VERSION } from '@renderer/version'
+import { useUpdater } from '@renderer/composables/useUpdater'
 
-const { pendingVersion, quitAndInstall } = useUpdater();
+const { pendingVersion, quitAndInstall } = useUpdater()
 </script>
 
 <template>

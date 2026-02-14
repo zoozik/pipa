@@ -16,7 +16,8 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "paths": {
-      "@renderer/*": ["./src/renderer/src/*"]
+      "@renderer/*": ["./src/renderer/src/*"],
+      "@shared/*": ["./shared/*"]
     }
   },
   "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue"],

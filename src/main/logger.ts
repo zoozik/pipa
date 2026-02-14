@@ -3,8 +3,7 @@ import { existsSync, mkdirSync, writeFileSync } from 'fs'
 import { join } from 'path'
 import { App } from '../../shared/app'
 
-const DEBUG_LOG_DIR =
-  process.env.LOCALAPPDATA?.trim() ? join(process.env.LOCALAPPDATA.trim(), App.NAME) : null
+const DEBUG_LOG_DIR = process.env.LOCALAPPDATA?.trim() ? join(process.env.LOCALAPPDATA.trim(), App.NAME) : null
 
 export function debugLog(msg: string): void {
   if (!DEBUG_LOG_DIR) return
@@ -19,7 +18,7 @@ export function debugLog(msg: string): void {
 }
 
 export function reportError(title: string, err: unknown): void {
-  const message = err instanceof Error ? err.stack ?? err.message : String(err)
+  const message = err instanceof Error ? (err.stack ?? err.message) : String(err)
   debugLog(`${title}: ${message}`)
   try {
     const logPath = join(app.getPath('userData'), 'error.log')

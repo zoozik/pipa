@@ -42,17 +42,10 @@ function getByPath(obj: Record<string, unknown>, path: string): string | undefin
   return typeof current === 'string' ? current : undefined
 }
 
-export function t(
-  locale: Locale,
-  key: string,
-  placeholders?: Record<string, string>
-): string {
+export function t(locale: Locale, key: string, placeholders?: Record<string, string>): string {
   const all = getMessages()
   const msg = all[locale] ?? all.en
-  let result =
-    getByPath(msg as Record<string, unknown>, key) ??
-    getByPath(all.en as Record<string, unknown>, key) ??
-    key
+  let result = getByPath(msg as Record<string, unknown>, key) ?? getByPath(all.en as Record<string, unknown>, key) ?? key
   if (placeholders) {
     for (const [name, value] of Object.entries(placeholders)) {
       result = result.replace(new RegExp(`\\{${name}\\}`, 'g'), value)

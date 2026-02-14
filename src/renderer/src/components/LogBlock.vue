@@ -12,14 +12,9 @@ function setContainerRef(el: unknown) {
 </script>
 
 <template>
-  <div class="log-block" :ref="setContainerRef">
+  <div :ref="setContainerRef" class="log-block">
     <div class="log-content">
-      <div
-        v-for="(entry, i) in logLines"
-        :key="i"
-        class="log-line"
-        :class="entry.stream"
-      >
+      <div v-for="(entry, i) in logLines" :key="i" class="log-line" :class="entry.stream">
         {{ entry.text }}
       </div>
     </div>
@@ -29,7 +24,7 @@ function setContainerRef(el: unknown) {
 <style lang="scss" scoped>
 .log-block {
   @extend %grow;
-  min-height: 160px;
+  min-height: 120px;
   background: var(--color-bg-dark);
   border-radius: 8px;
   overflow-y: auto;

@@ -4,10 +4,7 @@ import vue from '@vitejs/plugin-vue'
 
 export default defineConfig({
   main: {
-    plugins: [externalizeDepsPlugin()],
-    define: {
-      __GH_TOKEN__: JSON.stringify(process.env.GH_TOKEN ?? '')
-    }
+    plugins: [externalizeDepsPlugin()]
   },
 
   preload: {
@@ -19,7 +16,8 @@ export default defineConfig({
       alias: {
         '@renderer': resolve('src/renderer/src'),
         '@shared': resolve('shared'),
-        '@logo': resolve('resources/icon.png')
+        '@logo': resolve('resources/icon.png'),
+        '@Logo': resolve('resources/icon.png')
       }
     },
     css: {

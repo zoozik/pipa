@@ -36,17 +36,8 @@ defineProps<{
         >
           📌
         </button>
-        <button
-          type="button"
-          class="tray-btn"
-          :aria-label="$t('header.minimizeToTray')"
-          @click="onMinimizeToTray"
-        >
-          −
-        </button>
-        <button type="button" class="close-btn" :aria-label="$t('header.close')" @click="onClose">
-          ×
-        </button>
+        <button type="button" class="tray-btn" :aria-label="$t('header.minimizeToTray')" @click="onMinimizeToTray">−</button>
+        <button type="button" class="close-btn" :aria-label="$t('header.close')" @click="onClose">×</button>
       </div>
     </div>
   </header>
@@ -104,7 +95,10 @@ defineProps<{
     color: var(--color-text-muted);
     font-size: 14px;
     line-height: 1;
-    transition: background 0.15s, color 0.15s, border-color 0.15s;
+    transition:
+      background 0.15s,
+      color 0.15s,
+      border-color 0.15s;
 
     &:hover {
       background: var(--color-button-hover-bg);
@@ -133,7 +127,9 @@ defineProps<{
     color: var(--color-text-muted);
     font-size: 18px;
     line-height: 1;
-    transition: background 0.15s, color 0.15s;
+    transition:
+      background 0.15s,
+      color 0.15s;
 
     &:hover {
       background: var(--color-button-hover-bg);
@@ -153,7 +149,9 @@ defineProps<{
     color: var(--color-text-muted);
     font-size: 20px;
     line-height: 1;
-    transition: background 0.15s, color 0.15s;
+    transition:
+      background 0.15s,
+      color 0.15s;
 
     &:hover {
       background: var(--color-button-hover-bg);

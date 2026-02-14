@@ -23,11 +23,7 @@ function stopConfigWatcher() {
   }
 }
 
-function startConfigWatcher(
-  configPath: string,
-  deps: VpnDeps,
-  restart: () => void
-) {
+function startConfigWatcher(configPath: string, deps: VpnDeps, restart: () => void) {
   stopConfigWatcher()
 
   let restartTimer: ReturnType<typeof setTimeout> | null = null

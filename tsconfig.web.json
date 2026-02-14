@@ -7,7 +7,11 @@
     "allowSyntheticDefaultImports": true,
     "strict": true,
     "noEmit": true,
-    "jsx": "preserve"
+    "jsx": "preserve",
+    "paths": {
+      "@renderer/*": ["./src/renderer/src/*"],
+      "@shared/*": ["./shared/*"]
+    }
   },
   "include": ["src/renderer/**/*.ts", "src/renderer/**/*.tsx", "src/renderer/**/*.vue"]
 }

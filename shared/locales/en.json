@@ -29,7 +29,11 @@
   },
   "chart": {
     "download": "Download",
-    "upload": "Upload"
+    "upload": "Upload",
+    "sizeMb": "MB",
+    "sizeGb": "GB",
+    "speedMb": "{size}/s",
+    "speedGb": "{size}/s"
   },
   "locale": {
     "en": "English",

@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import { onMounted } from 'vue';
-import { useTrafficChart } from '../composables/useTrafficChart';
+import { onMounted } from 'vue'
+import { useTrafficChart } from '../composables/useTrafficChart'
 
-defineProps<{ currentOutbound?: string }>();
+defineProps<{ currentOutbound?: string }>()
 
-const { chartCanvas, totalDownload, totalUpload, formatSpeed, subscribeNetworkStats, initChart } = useTrafficChart();
+const { chartCanvas, totalDownload, totalUpload, formatSpeed, subscribeNetworkStats, initChart } = useTrafficChart()
 
 onMounted(() => {
-  subscribeNetworkStats();
-  initChart();
-});
+  subscribeNetworkStats()
+  initChart()
+})
 </script>
 
 <template>

@@ -10,19 +10,11 @@ defineProps<{
 <template>
   <div class="checkboxes">
     <label class="checkbox-row">
-      <input
-        type="checkbox"
-        :checked="autoStartVpn"
-        @change="(e) => onAutoStartVpnChange((e.target as HTMLInputElement).checked)"
-      />
+      <input type="checkbox" :checked="autoStartVpn" @change="(e) => onAutoStartVpnChange((e.target as HTMLInputElement).checked)" />
       <span>{{ $t('settings.autoStartVpn') }}</span>
     </label>
     <label class="checkbox-row">
-      <input
-        type="checkbox"
-        :checked="launchAtLogin"
-        @change="(e) => onLaunchAtLoginChange((e.target as HTMLInputElement).checked)"
-      />
+      <input type="checkbox" :checked="launchAtLogin" @change="(e) => onLaunchAtLoginChange((e.target as HTMLInputElement).checked)" />
       <span>{{ $t('settings.launchAtLogin') }}</span>
     </label>
   </div>

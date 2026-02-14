@@ -10,7 +10,7 @@ export function useUpdater() {
       pendingVersion.value = payload.version
     }
     window.app.onUpdateDownloaded(callback)
-    
+
     removeListener = () => {
       // ipcRenderer.removeListener would need to be exposed for true cleanup
     }

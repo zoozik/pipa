@@ -16,9 +16,7 @@ contextBridge.exposeInMainWorld('vpn', {
     ipcRenderer.on('vpn-status', (_event, payload) => callback(payload))
   },
 
-  onNetworkStats: (
-    callback: (payload: { totalDownload: number; totalUpload: number }) => void
-  ) => {
+  onNetworkStats: (callback: (payload: { totalDownload: number; totalUpload: number }) => void) => {
     ipcRenderer.on('network-stats', (_event, payload) => callback(payload))
   },
 

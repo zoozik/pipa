@@ -1,3 +1,3 @@
-import pkg from '../../../package.json' assert { type: 'json' };
+import pkg from '../../../package.json' assert { type: 'json' }
 
-export const APP_VERSION = pkg.version as string;
+export const APP_VERSION = pkg.version as string

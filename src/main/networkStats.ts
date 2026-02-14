@@ -26,10 +26,8 @@ async function poll(send: SendNetworkStats): Promise<void> {
     const now = Date.now()
     const elapsed = lastStatsTime > 0 ? (now - lastStatsTime) / 1000 : 1
 
-    const totalDownload =
-      lastStatsTime > 0 ? Math.max(0, (totalRx - lastTotalRx) / elapsed) : 0
-    const totalUpload =
-      lastStatsTime > 0 ? Math.max(0, (totalTx - lastTotalTx) / elapsed) : 0
+    const totalDownload = lastStatsTime > 0 ? Math.max(0, (totalRx - lastTotalRx) / elapsed) : 0
+    const totalUpload = lastStatsTime > 0 ? Math.max(0, (totalTx - lastTotalTx) / elapsed) : 0
 
     lastTotalRx = totalRx
     lastTotalTx = totalTx

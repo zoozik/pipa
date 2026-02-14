@@ -2,8 +2,6 @@ import { autoUpdater } from 'electron-updater'
 import type { BrowserWindow } from 'electron'
 import { debugLog } from './logger'
 
-declare const __GH_TOKEN__: string
-
 export function setupUpdater(getWindow: () => BrowserWindow | null): void {
   autoUpdater.autoDownload = true
   autoUpdater.autoInstallOnAppQuit = true
