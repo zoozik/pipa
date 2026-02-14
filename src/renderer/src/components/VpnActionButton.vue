@@ -11,48 +11,115 @@ defineProps<{
 <template>
   <button type="button" class="action-btn" :class="{ running }" :disabled="disabled" @click="onToggle">
     <img :src="logoUrl" alt="" class="action-btn-logo" />
-    <!-- {{ running ? $t('vpn.disconnect') : $t('vpn.connect') }} -->
+
+    <div class="text">
+      {{ running ? $t('vpn.disconnect') : $t('vpn.connect') }}
+    </div>
   </button>
 </template>
 
 <style lang="scss" scoped>
 .action-btn {
-  @extend %pointer, %shrink, %flex, %items-center, %justify-center;
-  gap: 8px;
+  @extend %pointer, %shrink, %flex, %flex-column, %items-center, %justify-center;
+  gap: 2px;
   padding-block: 10px;
   padding-inline: 24px;
-  font-size: 15px;
-  font-weight: 600;
   background: transparent;
   border: none;
-  aspect-ratio: 1/1;
-  border-radius: 50%;
   width: 40%;
+  aspect-ratio: 1/1;
   margin-block: auto;
   margin-inline: auto;
-  transition: filter 0.5s ease;
+  border-radius: 50%;
+
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(-45deg, transparent 35%, #fff 45%, #fff 55%, transparent 65%);
+    z-index: 3;
+    translate: -100% -100%;
+    animation: wale 3s ease infinite;
+    mix-blend-mode: overlay;
+    display: none;
+  }
+
+  @keyframes wale {
+    15% {
+      translate: -100% -100%;
+    }
+    50%,
+    60% {
+      translate: 100% 100%;
+    }
+  }
+
+  .text {
+    @extend %w-full;
+    @extend %flex;
+    @extend %items-center;
+    @extend %justify-center;
+    position: absolute;
+    inset-inline-start: 50%;
+    min-height: 32px;
+    inset-block-end: 25%;
+    translate: -50% 0;
+    background: hsl(from var(--color-text-inverse) h s l / 75%);
+    backdrop-filter: blur(3px);
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 14px;
+    line-height: 1;
+    font-weight: 500;
+    color: var(--color-text-app);
+    text-transform: uppercase;
+    text-shadow: 1px 1px 0px var(--color-text-inverse);
+  }
 
   .action-btn-logo {
     @extend %block, %shrink;
     width: 100%;
     aspect-ratio: 1/1;
     object-fit: contain;
+    transition:
+      filter 0.5s ease,
+      scale 0.1s ease-out;
   }
 
   &:hover {
+    .action-btn-logo {
+      scale: 0.96 0.96;
+    }
   }
 
   &:active {
-    scale: 0.98 0.98;
+    .action-btn-logo {
+      scale: 0.92 0.92;
+    }
   }
 
   &:disabled {
     cursor: not-allowed;
-    filter: hue-rotate(135deg) grayscale(0.2) brightness(1.2);
+
+    .action-btn-logo {
+      filter: hue-rotate(135deg) grayscale(0.2) brightness(1.2);
+    }
   }
 
   &.running {
-    filter: hue-rotate(285deg) contrast(0.9) brightness(1.4);
+    .action-btn-logo {
+      filter: hue-rotate(285deg) contrast(0.9) brightness(1.4);
+    }
+
+    &::before {
+      display: block;
+    }
+
+    .text {
+      display: none;
+    }
   }
 }
 </style>

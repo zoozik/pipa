@@ -17,11 +17,17 @@ export function setupUpdater(getWindow: () => BrowserWindow | null): void {
     debugLog(`Updater error: ${err.message}`)
   })
 
-  setTimeout(() => {
-    autoUpdater.checkForUpdatesAndNotify().catch((err: unknown) => {
-      debugLog(`Updater check failed: ${err instanceof Error ? err.message : String(err)}`)
-    })
-  }, 5000)
+  checkForUpdate()
+
+  setInterval(() => {
+    checkForUpdate()
+  }, 3600)
+}
+
+const checkForUpdate = () => {
+  autoUpdater.checkForUpdatesAndNotify().catch((err: unknown) => {
+    debugLog(`Updater check failed: ${err instanceof Error ? err.message : String(err)}`)
+  })
 }
 
 export function quitAndInstall(): void {

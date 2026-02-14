@@ -119,14 +119,10 @@ export function registerIpc(deps: IpcDeps) {
     const current = loadSettings()
     const next: AppSettings = { ...current, ...settings }
     saveSettings(next)
-    if (app.isPackaged && (process.platform === 'win32' || process.platform === 'darwin')) {
-      const loginSettings: { openAtLogin: boolean; path?: string } = {
+    if (process.platform === 'win32' || process.platform === 'darwin') {
+      app.setLoginItemSettings({
         openAtLogin: next.launchAtLogin
-      }
-      if (process.platform === 'win32') {
-        loginSettings.path = process.execPath
-      }
-      app.setLoginItemSettings(loginSettings)
+      })
     }
     const win = getWindow()
     if (win && typeof next.alwaysOnTop === 'boolean') {

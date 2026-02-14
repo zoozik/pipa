@@ -10,7 +10,8 @@
     "jsx": "preserve",
     "paths": {
       "@renderer/*": ["./src/renderer/src/*"],
-      "@shared/*": ["./shared/*"]
+      "@shared/*": ["./shared/*"],
+      "@logo": ["./resources/icon.png"]
     }
   },
   "include": ["src/renderer/**/*.ts", "src/renderer/**/*.tsx", "src/renderer/**/*.vue"]

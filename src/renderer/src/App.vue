@@ -97,21 +97,22 @@ onMounted(async () => {
   padding-inline: var(--app-shadow-offset);
   color: var(--color-text-app);
   max-height: 100dvh;
-}
+  pointer-events: auto;
 
-.inner {
-  @extend %flex, %flex-column, %grow;
-  box-shadow: 0 4px var(--app-shadow-offset) var(--color-shadow);
-  background: var(--color-bg-base);
-  border-radius: 12px;
-  overflow: hidden;
-}
+  .inner {
+    @extend %flex, %flex-column, %grow;
+    box-shadow: 0 4px var(--app-shadow-offset) var(--color-shadow);
+    background: var(--color-bg-base);
+    border-radius: 12px;
+    overflow: hidden;
 
-.content {
-  @extend %flex, %flex-column, %grow;
-  padding-block: var(--app-base-offset);
-  padding-inline: var(--app-base-offset);
-  gap: 12px;
-  overflow: hidden;
+    .content {
+      @extend %flex, %flex-column, %grow;
+      padding-block: var(--app-base-offset);
+      padding-inline: var(--app-base-offset);
+      gap: 12px;
+      overflow: hidden;
+    }
+  }
 }
 </style>
