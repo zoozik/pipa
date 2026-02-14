@@ -1,0 +1,90 @@
+{
+  "name": "vpn-launcher",
+  "version": "1.0.14",
+  "description": "PIPA VPN",
+  "main": "./out/main/index.js",
+  "author": "",
+  "scripts": {
+    "dev": "electron-vite --watch dev",
+    "build": "electron-vite build",
+    "start": "electron-vite preview",
+    "build:win": "npm run build && node scripts/build-icon.cjs && electron-builder --win",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "dependencies": {
+    "@electron-toolkit/preload": "^3.0.2",
+    "@electron-toolkit/utils": "^4.0.0",
+    "chart.js": "^4.5.1",
+    "systeminformation": "^5.30.7",
+    "vue-i18n": "^10.0.0",
+    "electron-updater": "^6.3.9"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.15.0",
+    "@types/node": "^22.19.1",
+    "@vitejs/plugin-vue": "^6.0.2",
+    "electron": "^33.0.0",
+    "electron-builder": "^25.0.0",
+    "electron-vite": "^5.0.0",
+    "eslint": "^9.15.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-vue": "^9.28.0",
+    "globals": "^15.12.0",
+    "png-to-ico": "^3.0.1",
+    "prettier": "^3.4.2",
+    "sass": "^1.80.0",
+    "typescript": "^5.6.0",
+    "typescript-eslint": "^8.15.0",
+    "vite": "^6.0.0",
+    "vue": "^3.5.0",
+    "vue-eslint-parser": "^9.4.3",
+    "vue-tsc": "^2.0.0"
+  },
+  "build": {
+    "appId": "com.vpn-launcher.app",
+    "productName": "PIPA VPN",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "out/**/*",
+      "shared/**/*"
+    ],
+    "extraResources": [
+      {
+        "from": "resources/sing-box.exe",
+        "to": "sing-box.exe"
+      },
+      {
+        "from": "resources/icon.png",
+        "to": "icon.png"
+      }
+    ],
+    "win": {
+      "icon": "resources/icon.ico",
+      "target": [
+        "nsis",
+        "dir"
+      ],
+      "requestedExecutionLevel": "requireAdministrator"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "runAfterFinish": true,
+      "createDesktopShortcut": true,
+      "installerLanguages": [
+        "en",
+        "ru"
+      ]
+    },
+    "publish": {
+      "provider": "github",
+      "owner": "zoozik",
+      "repo": "pipa"
+    }
+  }
+}
