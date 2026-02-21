@@ -1,7 +1,8 @@
 import { app, BrowserWindow } from 'electron'
 import { join } from 'path'
-import type { AppSettings } from './settings'
+
 import type { NetworkStatsPayload } from './networkStats'
+import type { AppSettings } from './settings'
 
 function getPreloadPath(): string {
   // В production getAppPath() = путь к app.asar; внутри asar структура out/preload/index.js

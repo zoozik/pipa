@@ -1,6 +1,6 @@
 import { app } from 'electron'
-import { join } from 'path'
 import { readFileSync, writeFileSync } from 'fs'
+import { join } from 'path'
 
 export type Locale = 'en' | 'ru'
 

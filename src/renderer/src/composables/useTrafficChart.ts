@@ -1,8 +1,9 @@
-import { ref, nextTick, watch } from 'vue'
 import { Chart, registerables } from 'chart.js'
+import { nextTick, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { formatSpeed as formatSpeedUtil } from '../utils/formatSpeed'
+
 import type { FormatSpeedOptions } from '../utils/formatSpeed'
+import { formatSpeed as formatSpeedUtil } from '../utils/formatSpeed'
 
 Chart.register(...registerables)
 

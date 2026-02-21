@@ -1,6 +1,7 @@
 import { app } from 'electron'
 import { readFileSync } from 'fs'
 import { join } from 'path'
+
 import type { Locale } from './settings'
 
 let messages: Record<Locale, Record<string, unknown>> | null = null

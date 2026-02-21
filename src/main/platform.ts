@@ -1,8 +1,7 @@
 import { app } from 'electron'
-import { join } from 'path'
 import { execSync } from 'child_process'
 import { existsSync } from 'fs'
-import { getDefaultPaths } from './paths'
+import { join } from 'path'
 
 const isDev = !app.isPackaged
 

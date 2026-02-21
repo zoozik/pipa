@@ -1,13 +1,14 @@
-import { app, ipcMain, dialog } from 'electron'
+import { app, dialog, ipcMain } from 'electron'
 import type { BrowserWindow } from 'electron'
 import { existsSync } from 'fs'
+
 import { App } from '../../shared/app'
-import { loadSettings, saveSettings, type AppSettings } from './settings'
-import { startVpn, stopVpn, isVpnRunning } from './vpn'
-import { createTray, type TrayApi } from './tray'
-import { setWindowAlwaysOnTop } from './window'
-import { quitAndInstall } from './updater'
 import { t } from './i18n'
+import { loadSettings, saveSettings, type AppSettings } from './settings'
+import { createTray, type TrayApi } from './tray'
+import { quitAndInstall } from './updater'
+import { setWindowAlwaysOnTop } from './window'
+import { isVpnRunning, startVpn, stopVpn } from './vpn'
 
 export interface IpcDeps {
   getWindow: () => BrowserWindow | null
@@ -44,6 +45,7 @@ export function registerIpc(deps: IpcDeps) {
     vpnDeps
   } = deps
 
+  // --- VPN
   ipcMain.handle('vpn-start', () => startVpn(vpnDeps))
 
   ipcMain.handle('vpn-stop', () => {
@@ -86,11 +88,13 @@ export function registerIpc(deps: IpcDeps) {
     return { path: getCustomConfigPath() }
   })
 
+  // --- App
   ipcMain.handle('app-quit', () => {
     stopVpn(vpnDeps)
     app.quit()
   })
 
+  // --- Window
   ipcMain.handle('window-minimize-to-tray', () => {
     const win = getWindow()
     if (!win) return
@@ -113,16 +117,21 @@ export function registerIpc(deps: IpcDeps) {
     win.hide()
   })
 
+  // --- Settings
   ipcMain.handle('settings-get', () => loadSettings())
 
   ipcMain.handle('settings-set', (_event, settings: Partial<AppSettings>) => {
     const current = loadSettings()
     const next: AppSettings = { ...current, ...settings }
     saveSettings(next)
-    if (process.platform === 'win32' || process.platform === 'darwin') {
-      app.setLoginItemSettings({
+    if (app.isPackaged && (process.platform === 'win32' || process.platform === 'darwin')) {
+      const loginSettings: { openAtLogin: boolean; path?: string } = {
         openAtLogin: next.launchAtLogin
-      })
+      }
+      if (process.platform === 'win32') {
+        loginSettings.path = process.execPath
+      }
+      app.setLoginItemSettings(loginSettings)
     }
     const win = getWindow()
     if (win && typeof next.alwaysOnTop === 'boolean') {
@@ -143,6 +152,7 @@ export function registerIpc(deps: IpcDeps) {
     return next
   })
 
+  // --- Updater
   ipcMain.handle('updater-quit-and-install', () => {
     quitAndInstall()
   })

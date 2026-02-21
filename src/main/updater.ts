@@ -1,5 +1,6 @@
-import { autoUpdater } from 'electron-updater'
 import type { BrowserWindow } from 'electron'
+import { autoUpdater } from 'electron-updater'
+
 import { debugLog } from './logger'
 
 export function setupUpdater(getWindow: () => BrowserWindow | null): void {

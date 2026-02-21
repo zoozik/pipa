@@ -1,6 +1,6 @@
-import { Tray, nativeImage, Menu } from 'electron'
-import { existsSync } from 'fs'
+import { Menu, nativeImage, Tray } from 'electron'
 import type { MenuItemConstructorOptions } from 'electron'
+import { existsSync } from 'fs'
 
 const FALLBACK_ICON_DATA = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg=='
 

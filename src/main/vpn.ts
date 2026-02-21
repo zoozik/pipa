@@ -1,7 +1,7 @@
-import { join, dirname } from 'path'
-import { spawn, ChildProcess } from 'child_process'
-import { watch, type FSWatcher } from 'fs'
 import type { BrowserWindow } from 'electron'
+import { spawn, type ChildProcess } from 'child_process'
+import { watch, type FSWatcher } from 'fs'
+import { dirname } from 'path'
 
 export interface VpnDeps {
   getWindow: () => BrowserWindow | null

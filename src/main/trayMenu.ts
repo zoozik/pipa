@@ -1,6 +1,7 @@
 import { app } from 'electron'
-import type { Locale } from './settings'
+
 import { t } from './i18n'
+import type { Locale } from './settings'
 import type { VpnDeps } from './vpn'
 
 export interface TrayMenuDeps {

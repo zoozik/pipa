@@ -1,5 +1,6 @@
 import { contextBridge, ipcRenderer } from 'electron'
 
+// --- VPN API
 contextBridge.exposeInMainWorld('vpn', {
   start: () => ipcRenderer.invoke('vpn-start'),
   stop: () => ipcRenderer.invoke('vpn-stop'),
@@ -25,6 +26,7 @@ contextBridge.exposeInMainWorld('vpn', {
   }
 })
 
+// --- App / Window / Updater API
 contextBridge.exposeInMainWorld('app', {
   quit: () => ipcRenderer.invoke('app-quit'),
   minimizeToTray: () => ipcRenderer.invoke('window-minimize-to-tray'),

@@ -1,6 +1,7 @@
 import { app, dialog } from 'electron'
 import { existsSync, mkdirSync, writeFileSync } from 'fs'
 import { join } from 'path'
+
 import { App } from '../../shared/app'
 
 const DEBUG_LOG_DIR = process.env.LOCALAPPDATA?.trim() ? join(process.env.LOCALAPPDATA.trim(), App.NAME) : null
