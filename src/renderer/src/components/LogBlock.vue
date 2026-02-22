@@ -24,21 +24,21 @@ function setContainerRef(el: unknown) {
 <style lang="scss" scoped>
 .log-block {
   @extend %grow;
-  min-height: 120px;
+  min-height: 120rem;
   background: var(--color-bg-dark);
-  border-radius: 8px;
+  border-radius: 8rem;
   overflow-y: auto;
-  padding-block: 10px;
-  padding-inline: 10px;
+  padding-block: 10rem;
+  padding-inline: 10rem;
   font-family: 'Consolas', 'Monaco', monospace;
-  font-size: 12px;
+  font-size: 12rem;
   line-height: 1.45;
   user-select: text;
 }
 
 .log-content {
   @extend %flex, %flex-column;
-  gap: 2px;
+  gap: 2rem;
 }
 
 .log-line {

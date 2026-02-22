@@ -22,9 +22,9 @@ const { pendingVersion, quitAndInstall } = useUpdater()
 <style lang="scss" scoped>
 .footer {
   @extend %flex, %items-center, %justify-center, %shrink;
-  gap: 6px;
+  gap: 6rem;
   color: var(--color-text-muted);
-  font-size: 12px;
+  font-size: 12rem;
 }
 
 .version {
@@ -44,7 +44,7 @@ const { pendingVersion, quitAndInstall } = useUpdater()
   font-size: inherit;
   font-family: inherit;
   text-decoration: underline;
-  text-underline-offset: 2px;
+  text-underline-offset: 2rem;
 
   &:hover {
     color: var(--color-accent-hover, var(--color-accent));

@@ -26,10 +26,10 @@ process.on('unhandledRejection', (reason) => {
 debugLog('main process loaded')
 
 const gotSingleInstanceLock = app.requestSingleInstanceLock()
-if (!gotSingleInstanceLock) {
-  app.quit()
-  process.exit(0)
-}
+// if (!gotSingleInstanceLock) {
+//   app.quit()
+//   process.exit(0)
+// }
 
 app.on('second-instance', () => {
   const win = getWindow()

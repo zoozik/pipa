@@ -1,8 +1,11 @@
-import { app, BrowserWindow } from 'electron'
+import { app, BrowserWindow, screen } from 'electron'
 import { join } from 'path'
 
 import type { NetworkStatsPayload } from './networkStats'
 import type { AppSettings } from './settings'
+
+const WIDTH_RATIO = 500 / 800 // пропорция ширина/высота
+const HEIGHT_PERCENT = 0.72 // 60% высоты экрана
 
 function getPreloadPath(): string {
   // В production getAppPath() = путь к app.asar; внутри asar структура out/preload/index.js
@@ -68,9 +71,13 @@ export function createWindow(opts: CreateWindowOpts) {
     onClosed
   } = opts
 
+  const { height: screenHeight } = screen.getPrimaryDisplay().workAreaSize
+  const height = Math.round(screenHeight * HEIGHT_PERCENT)
+  const width = Math.round(height * WIDTH_RATIO)
+
   mainWindow = new BrowserWindow({
-    width: 500,
-    height: 800,
+    width,
+    height,
     frame: false,
     transparent: true,
     resizable: true,

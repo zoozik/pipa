@@ -1,17 +1,16 @@
 <script setup lang="ts">
 import { onMounted } from 'vue'
 
-import AppHeader from './components/AppHeader.vue'
-import ConfigPathRow from './components/ConfigPathRow.vue'
-import SettingsCheckboxes from './components/SettingsCheckboxes.vue'
-import VpnActionButton from './components/VpnActionButton.vue'
-import TrafficChart from './components/TrafficChart.vue'
-import LogBlock from './components/LogBlock.vue'
-import Footer from './components/Footer.vue'
-
-import { useVpn } from './composables/useVpn'
 import { useConfigPath } from './composables/useConfigPath'
 import { useSettings } from './composables/useSettings'
+import { useVpn } from './composables/useVpn'
+import AppHeader from './components/AppHeader.vue'
+import ConfigPathRow from './components/ConfigPathRow.vue'
+import Footer from './components/Footer.vue'
+import LogBlock from './components/LogBlock.vue'
+import SettingsCheckboxes from './components/SettingsCheckboxes.vue'
+import TrafficChart from './components/TrafficChart.vue'
+import VpnActionButton from './components/VpnActionButton.vue'
 
 const { vpnRunning, logLines, currentOutbound, logContainer, initStatus, toggleVpn, subscribeVpnEvents } = useVpn()
 
@@ -101,16 +100,22 @@ onMounted(async () => {
 
   .inner {
     @extend %flex, %flex-column, %grow;
-    box-shadow: 0 4px var(--app-shadow-offset) var(--color-shadow);
-    background: var(--color-bg-base);
-    border-radius: 12px;
+    box-shadow: 0 4rem var(--app-shadow-offset) var(--color-shadow);
+    background: linear-gradient(
+      to bottom,
+      hsl(from var(--color-bg-base) h s 15%) 0%,
+      hsl(from var(--color-bg-base) h s l) 20%,
+      hsl(from var(--color-bg-base) h s 12%) 60%
+    );
+
+    border-radius: 12rem;
     overflow: hidden;
 
     .content {
       @extend %flex, %flex-column, %grow;
       padding-block: var(--app-base-offset);
       padding-inline: var(--app-base-offset);
-      gap: 12px;
+      gap: 12rem;
       overflow: hidden;
     }
   }

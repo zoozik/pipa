@@ -21,9 +21,9 @@ defineProps<{
 <style lang="scss" scoped>
 .action-btn {
   @extend %pointer, %shrink, %flex, %flex-column, %items-center, %justify-center;
-  gap: 2px;
-  padding-block: 10px;
-  padding-inline: 24px;
+  gap: 2rem;
+  padding-block: 10rem;
+  padding-inline: 24rem;
   background: transparent;
   border: none;
   width: 40%;
@@ -63,19 +63,19 @@ defineProps<{
     @extend %justify-center;
     position: absolute;
     inset-inline-start: 50%;
-    min-height: 32px;
+    min-height: 32rem;
     inset-block-end: 25%;
     translate: -50% 0;
     background: hsl(from var(--color-text-inverse) h s l / 75%);
-    backdrop-filter: blur(3px);
-    border-radius: 8px;
-    padding: 8px 12px;
-    font-size: 14px;
+    backdrop-filter: blur(3rem);
+    border-radius: 8rem;
+    padding: 8rem 12rem;
+    font-size: 14rem;
     line-height: 1;
     font-weight: 500;
     color: var(--color-text-app);
     text-transform: uppercase;
-    text-shadow: 1px 1px 0px var(--color-text-inverse);
+    text-shadow: 1rem 1rem 0rem var(--color-text-inverse);
   }
 
   .action-btn-logo {

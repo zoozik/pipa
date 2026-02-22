@@ -23,20 +23,20 @@ defineProps<{
 <style lang="scss" scoped>
 .checkboxes {
   @extend %flex, %flex-column, %shrink;
-  gap: 10px;
+  gap: 10rem;
 }
 
 .checkbox-row {
   @extend %flex, %items-center, %pointer;
-  gap: 10px;
-  font-size: 13px;
+  gap: 10rem;
+  font-size: 13rem;
   color: var(--color-text-primary);
   user-select: none;
 
   input[type='checkbox'] {
     @extend %pointer;
-    width: 18px;
-    height: 18px;
+    width: 18rem;
+    height: 18rem;
     accent-color: var(--color-accent);
 
     &:disabled {

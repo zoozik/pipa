@@ -30,31 +30,31 @@ defineProps<{
 <style lang="scss" scoped>
 .config-path-row {
   @extend %flex, %flex-column, %shrink;
-  gap: 6px;
+  gap: 6rem;
 }
 
 .config-path-label {
-  font-size: 12px;
+  font-size: 12rem;
   font-weight: 500;
   color: var(--color-text-muted);
 }
 
 .config-path-input-row {
   @extend %flex, %items-center;
-  gap: 8px;
+  gap: 8rem;
   user-select: auto;
 }
 
 .config-path-input {
   @extend %grow;
   min-width: 0;
-  padding-block: 8px;
-  padding-inline: 10px;
-  font-size: 13px;
+  padding-block: 8rem;
+  padding-inline: 10rem;
+  font-size: 13rem;
   color: var(--color-text-primary);
   background: var(--color-bg-elevated);
-  border-radius: 6px;
-  border: 1px solid var(--color-border);
+  border-radius: 6rem;
+  border: 1rem solid var(--color-border);
 
   &::placeholder {
     color: var(--color-text-placeholder);
@@ -63,15 +63,15 @@ defineProps<{
 
 .config-path-browse {
   @extend %pointer, %shrink;
-  padding-block: 8px;
-  padding-inline: 12px;
-  font-size: 13px;
+  padding-block: 8rem;
+  padding-inline: 12rem;
+  font-size: 13rem;
   font-weight: 500;
   color: var(--color-text-inverse);
   background: var(--color-accent);
   border: none;
-  border-radius: 6px;
-  min-width: 100px;
+  border-radius: 6rem;
+  min-width: 100rem;
 
   &:hover {
     background: var(--color-accent-hover);
@@ -81,7 +81,7 @@ defineProps<{
 .config-path-error {
   margin-block: 0;
   margin-inline: 0;
-  font-size: 12px;
+  font-size: 12rem;
   color: var(--color-danger);
 }
 </style>

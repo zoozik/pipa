@@ -137,7 +137,7 @@ export function registerIpc(deps: IpcDeps) {
     if (win && typeof next.alwaysOnTop === 'boolean') {
       setWindowAlwaysOnTop(win, next.alwaysOnTop)
     }
-    if (next.locale !== undefined) {
+    if (!!settings.locale) {
       updateTrayMenu()
     }
     return next

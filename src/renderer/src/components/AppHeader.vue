@@ -46,7 +46,7 @@ defineProps<{
 <style lang="scss" scoped>
 .header {
   @extend %flex, %items-center, %justify-between, %shrink;
-  padding-block: 10px;
+  padding-block: 10rem;
   padding-inline: var(--app-base-offset);
   background: var(--color-bg-surface);
   -webkit-app-region: drag;
@@ -55,45 +55,45 @@ defineProps<{
   .title {
     margin-block: 0;
     margin-inline: 0;
-    font-size: 14px;
+    font-size: 14rem;
     font-weight: 600;
     color: var(--color-text-primary);
   }
 
   .header-actions {
     @extend %flex, %items-center;
-    gap: 8px;
+    gap: 8rem;
     -webkit-app-region: no-drag;
     app-region: no-drag;
   }
 
   .locale-select {
     @extend %pointer;
-    padding-block: 4px;
-    padding-inline: 8px;
-    font-size: 12px;
+    padding-block: 4rem;
+    padding-inline: 8rem;
+    font-size: 12rem;
     color: var(--color-text-primary);
     background: var(--color-bg-elevated);
-    border: 1px solid var(--color-border);
-    border-radius: 6px;
+    border: 1rem solid var(--color-border);
+    border-radius: 6rem;
   }
 
   .header-buttons {
     @extend %flex, %items-center;
-    gap: 4px;
+    gap: 4rem;
     -webkit-app-region: no-drag;
     app-region: no-drag;
   }
 
   .pin-btn {
     @extend %flex, %items-center, %justify-center, %pointer;
-    width: 28px;
-    height: 28px;
-    border: 1px solid var(--color-border-transparent);
-    border-radius: 6px;
+    width: 28rem;
+    height: 28rem;
+    border: 1rem solid var(--color-border-transparent);
+    border-radius: 6rem;
     background: var(--color-bg-transparent);
     color: var(--color-text-muted);
-    font-size: 14px;
+    font-size: 14rem;
     line-height: 1;
     transition:
       background 0.15s,
@@ -119,13 +119,13 @@ defineProps<{
 
   .tray-btn {
     @extend %flex, %items-center, %justify-center, %pointer;
-    width: 28px;
-    height: 28px;
+    width: 28rem;
+    height: 28rem;
     border: none;
-    border-radius: 6px;
+    border-radius: 6rem;
     background: var(--color-bg-transparent);
     color: var(--color-text-muted);
-    font-size: 18px;
+    font-size: 18rem;
     line-height: 1;
     transition:
       background 0.15s,
@@ -141,13 +141,13 @@ defineProps<{
     @extend %flex, %items-center, %justify-center, %pointer;
     -webkit-app-region: no-drag;
     app-region: no-drag;
-    width: 28px;
-    height: 28px;
+    width: 28rem;
+    height: 28rem;
     border: none;
-    border-radius: 6px;
+    border-radius: 6rem;
     background: var(--color-bg-transparent);
     color: var(--color-text-muted);
-    font-size: 20px;
+    font-size: 20rem;
     line-height: 1;
     transition:
       background 0.15s,

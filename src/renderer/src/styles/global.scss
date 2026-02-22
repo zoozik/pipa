@@ -12,7 +12,16 @@
   font-variation-settings: 'wdth' 100;
 }
 
+:root {
+  font-size: calc(100 / 460 * 1dvw);
+
+  @media (min-width: 1600rem) {
+    font-size: calc(100 / 2048 * 1dvw);
+  }
+}
+
 html,
 body {
   pointer-events: none;
+  font-size: 16rem;
 }
