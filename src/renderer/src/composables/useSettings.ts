@@ -3,9 +3,9 @@ import { i18n } from '../i18n'
 import type { Locale } from '../i18n'
 
 export function useSettings() {
-  const autoStartVpn = ref(false)
-  const launchAtLogin = ref(false)
-  const alwaysOnTop = ref(false)
+  const autoStartVpn = ref<boolean>(false)
+  const launchAtLogin = ref<boolean>(false)
+  const alwaysOnTop = ref<boolean>(false)
   const locale = ref<Locale>('en')
 
   async function loadSettings() {

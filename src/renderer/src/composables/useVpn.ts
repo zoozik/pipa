@@ -6,12 +6,12 @@ export interface LogEntry {
 }
 
 export function useVpn() {
-  const vpnRunning = ref(false)
+  const vpnRunning = ref<boolean>(false)
   const logLines = ref<LogEntry[]>([])
   const currentOutbound = ref<string>()
   const logContainer = ref<HTMLElement | null>(null)
 
-  function appendLog(line: string, stream: string) {
+  function appendLog(line: string, stream: string): void {
     const trimmed = line.trim()
     if (!trimmed) return
 

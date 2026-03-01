@@ -17,8 +17,8 @@ export type NetworkStatsPayload = {
 export function useTrafficChart() {
   const { t, d, n, locale } = useI18n()
   const chartCanvas = ref<HTMLCanvasElement | null>(null)
-  const totalDownload = ref(0)
-  const totalUpload = ref(0)
+  const totalDownload = ref<number>(0)
+  const totalUpload = ref<number>(0)
   const totalDownloadSpeeds = ref<number[]>([])
   const totalUploadSpeeds = ref<number[]>([])
   const totalTimestamps = ref<number[]>([])

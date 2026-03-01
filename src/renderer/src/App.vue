@@ -4,6 +4,7 @@ import { onMounted } from 'vue'
 import { useConfigPath } from './composables/useConfigPath'
 import { useSettings } from './composables/useSettings'
 import { useVpn } from './composables/useVpn'
+
 import AppHeader from './components/AppHeader.vue'
 import ConfigPathRow from './components/ConfigPathRow.vue'
 import Footer from './components/Footer.vue'
@@ -14,7 +15,21 @@ import VpnActionButton from './components/VpnActionButton.vue'
 
 const { vpnRunning, logLines, currentOutbound, logContainer, initStatus, toggleVpn, subscribeVpnEvents } = useVpn()
 
-const { configPath, configPathError, configPathValid, applyConfigPath, pickConfigFile, restoreOrLoadConfigPath } = useConfigPath()
+const {
+  configPath,
+  configPathError,
+  configPathValid,
+  configSource,
+  remoteConfigUrl,
+  remoteConfigUrlError,
+  isRefreshRemoteDisabled,
+  applyConfigPath,
+  pickConfigFile,
+  restoreOrLoadConfigPath,
+  setConfigSourceLocal,
+  setConfigSourceRemote,
+  refreshRemoteConfig
+} = useConfigPath()
 
 const {
   autoStartVpn,
@@ -64,9 +79,16 @@ onMounted(async () => {
       <div class="content">
         <ConfigPathRow
           v-model:config-path="configPath"
+          v-model:remote-config-url="remoteConfigUrl"
+          :config-source="configSource"
           :config-path-error="configPathError"
+          :remote-config-url-error="remoteConfigUrlError"
+          :refresh-remote-disabled="isRefreshRemoteDisabled"
           :on-input="applyConfigPath"
           :on-pick-file="pickConfigFile"
+          :on-config-source-local="setConfigSourceLocal"
+          :on-config-source-remote="setConfigSourceRemote"
+          :on-refresh-remote="() => setConfigSourceRemote()"
         />
 
         <SettingsCheckboxes

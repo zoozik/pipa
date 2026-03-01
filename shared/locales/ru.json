@@ -17,7 +17,13 @@
     "label": "Конфиг",
     "placeholder": "Путь к конфигу",
     "browse": "Обзор",
-    "fileNotFound": "Файл не найден"
+    "fileNotFound": "Файл не найден",
+    "local": "Локальный",
+    "remote": "Удалённый",
+    "refresh": "Обновить",
+    "urlPlaceholder": "URL конфига",
+    "invalidUrl": "Некорректный URL",
+    "downloadError": "Ошибка загрузки или применения конфига"
   },
   "settings": {
     "autoStartVpn": "Автоматическое включение VPN при запуске приложения",

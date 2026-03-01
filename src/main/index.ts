@@ -4,8 +4,10 @@ import { existsSync } from 'fs'
 import { registerIpc } from './ipc'
 import { debugLog, reportError } from './logger'
 import { startNetworkStatsPolling, stopNetworkStatsPolling } from './networkStats'
+import { CONFIG_SOURCE } from '../../shared/config'
 import { getPaths } from './paths'
 import { getTrayIconPath, isElevated, isDev } from './platform'
+import { fetchAndApplyRemoteConfig } from './remoteConfig'
 import { loadSettings } from './settings'
 import type { TrayApi } from './tray'
 import { buildTrayMenuTemplate } from './trayMenu'
@@ -39,10 +41,31 @@ app.on('second-instance', () => {
   }
 })
 
+const REMOTE_CONFIG_INTERVAL_MS = 60 * 60 * 1000
+
 let customConfigPath: string | null = null
 let trayApi: TrayApi | null = null
+let remoteConfigTimerId: ReturnType<typeof setInterval> | null = null
+
+function clearRemoteConfigTimer() {
+  if (remoteConfigTimerId !== null) {
+    clearInterval(remoteConfigTimerId)
+    remoteConfigTimerId = null
+  }
+}
+
+function startRemoteConfigTimer() {
+  clearRemoteConfigTimer()
+  remoteConfigTimerId = setInterval(() => {
+    const s = loadSettings()
+    if (s.configSource !== CONFIG_SOURCE.REMOTE || !s.remoteConfigUrl.trim()) return
+    void fetchAndApplyRemoteConfig(s.remoteConfigUrl.trim())
+  }, REMOTE_CONFIG_INTERVAL_MS)
+}
 
 function getPathsWithCustom() {
+  const s = loadSettings()
+  if (s.configSource === CONFIG_SOURCE.REMOTE) return getPaths(null)
   return getPaths(customConfigPath)
 }
 
@@ -125,8 +148,15 @@ void (async () => {
     isConfigPathValid,
     updateTrayMenu,
     getTrayIconPath,
+    clearRemoteConfigTimer,
+    startRemoteConfigTimer,
     vpnDeps
   })
+
+  const initialSettings = loadSettings()
+  if (initialSettings.configSource === CONFIG_SOURCE.REMOTE && initialSettings.remoteConfigUrl.trim()) {
+    startRemoteConfigTimer()
+  }
 
   if (app.isPackaged) {
     setupUpdater(getWindow)
@@ -135,9 +165,11 @@ void (async () => {
 
 app.on('window-all-closed', () => {
   stopVpn(vpnDeps)
+  clearRemoteConfigTimer()
   app.quit()
 })
 
 app.on('before-quit', () => {
   stopVpn(vpnDeps)
+  clearRemoteConfigTimer()
 })

@@ -1,6 +1,6 @@
 {
   "name": "vpn-launcher",
-  "version": "1.0.18",
+  "version": "1.0.19",
   "description": "PIPA VPN",
   "main": "./out/main/index.js",
   "author": "",

@@ -14,5 +14,5 @@
       "@logo": ["./resources/icon.png"]
     }
   },
-  "include": ["src/renderer/**/*.ts", "src/renderer/**/*.tsx", "src/renderer/**/*.vue"]
+  "include": ["src/renderer/**/*.ts", "src/renderer/**/*.tsx", "src/renderer/**/*.vue","shared/**/*.ts"]
 }

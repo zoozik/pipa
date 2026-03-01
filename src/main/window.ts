@@ -4,7 +4,7 @@ import { join } from 'path'
 import type { NetworkStatsPayload } from './networkStats'
 import type { AppSettings } from './settings'
 
-const WIDTH_RATIO = 500 / 800 // пропорция ширина/высота
+const WIDTH_RATIO = 500 / 850 // пропорция ширина/высота
 const HEIGHT_PERCENT = 0.72 // 60% высоты экрана
 
 function getPreloadPath(): string {

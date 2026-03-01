@@ -2,6 +2,8 @@ import { app } from 'electron'
 import { readFileSync, writeFileSync } from 'fs'
 import { join } from 'path'
 
+import { CONFIG_SOURCE } from '../../shared/config'
+
 export type Locale = 'en' | 'ru'
 
 export function getDefaultLocale(): Locale {
@@ -14,25 +16,42 @@ export interface AppSettings {
   launchAtLogin: boolean
   alwaysOnTop: boolean
   locale: Locale
+  configSource: CONFIG_SOURCE
+  remoteConfigUrl: string
 }
 
 export const DEFAULT_SETTINGS: AppSettings = {
   autoStartVpn: false,
   launchAtLogin: false,
   alwaysOnTop: false,
-  locale: 'en'
+  locale: 'en',
+  configSource: CONFIG_SOURCE.LOCAL,
+  remoteConfigUrl: ''
 }
 
 export function getSettingsPath(): string {
   return join(app.getPath('userData'), 'settings.json')
 }
 
+function normalizeConfigSource(value: unknown): CONFIG_SOURCE {
+  if (value === CONFIG_SOURCE.REMOTE || value === 'remote') return CONFIG_SOURCE.REMOTE
+  return CONFIG_SOURCE.LOCAL
+}
+
 export function loadSettings(): AppSettings {
   const defaults = { ...DEFAULT_SETTINGS, locale: getDefaultLocale() }
   try {
     const data = readFileSync(getSettingsPath(), 'utf-8')
-    const parsed = JSON.parse(data) as Partial<AppSettings>
-    return { ...defaults, ...parsed }
+    const parsed = JSON.parse(data) as Partial<AppSettings> & { configSource?: string }
+    const out: AppSettings = { ...defaults, ...parsed }
+
+    if (!!parsed.configSource) {
+      out.configSource = normalizeConfigSource(parsed.configSource)
+    }
+    if (typeof parsed.remoteConfigUrl === 'string') {
+      out.remoteConfigUrl = parsed.remoteConfigUrl
+    }
+    return out
   } catch {
     return defaults
   }

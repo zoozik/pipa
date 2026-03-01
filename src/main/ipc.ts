@@ -3,7 +3,9 @@ import type { BrowserWindow } from 'electron'
 import { existsSync } from 'fs'
 
 import { App } from '../../shared/app'
+import { CONFIG_SOURCE } from '../../shared/config'
 import { t } from './i18n'
+import { fetchAndApplyRemoteConfig } from './remoteConfig'
 import { loadSettings, saveSettings, type AppSettings } from './settings'
 import { createTray, type TrayApi } from './tray'
 import { quitAndInstall } from './updater'
@@ -20,6 +22,8 @@ export interface IpcDeps {
   isConfigPathValid: () => boolean
   updateTrayMenu: () => void
   getTrayIconPath: () => string
+  clearRemoteConfigTimer: () => void
+  startRemoteConfigTimer: () => void
   vpnDeps: {
     getWindow: () => BrowserWindow | null
     getPaths: () => { singBoxPath: string; configPath: string }
@@ -42,6 +46,8 @@ export function registerIpc(deps: IpcDeps) {
     isConfigPathValid,
     updateTrayMenu,
     getTrayIconPath,
+    clearRemoteConfigTimer,
+    startRemoteConfigTimer,
     vpnDeps
   } = deps
 
@@ -86,6 +92,57 @@ export function registerIpc(deps: IpcDeps) {
 
     setCustomConfigPath(result.filePaths[0])
     return { path: getCustomConfigPath() }
+  })
+
+  // --- Config source (local / remote)
+  ipcMain.handle('config-get-source', () => {
+    const s = loadSettings()
+    return { configSource: s.configSource, remoteConfigUrl: s.remoteConfigUrl }
+  })
+
+  ipcMain.handle('config-set-source', async (_event, payload: { configSource: CONFIG_SOURCE; remoteConfigUrl?: string }) => {
+    const current = loadSettings()
+    const next: AppSettings = {
+      ...current,
+      configSource: payload.configSource,
+      remoteConfigUrl: typeof payload.remoteConfigUrl === 'string' ? payload.remoteConfigUrl : current.remoteConfigUrl
+    }
+    saveSettings(next)
+
+    if (payload.configSource === CONFIG_SOURCE.REMOTE) {
+      setCustomConfigPath(null)
+      if (next.remoteConfigUrl.trim()) {
+        const result = await fetchAndApplyRemoteConfig(next.remoteConfigUrl.trim())
+        if (result.ok) {
+          startRemoteConfigTimer()
+          if (isVpnRunning()) {
+            stopVpn(vpnDeps)
+            setTimeout(() => startVpn(vpnDeps), 200)
+          }
+        }
+        updateTrayMenu()
+        return result
+      }
+      startRemoteConfigTimer()
+      updateTrayMenu()
+      return { ok: true }
+    }
+
+    clearRemoteConfigTimer()
+    updateTrayMenu()
+    return { ok: true }
+  })
+
+  ipcMain.handle('config-refresh-remote', async () => {
+    const s = loadSettings()
+    if (s.configSource !== CONFIG_SOURCE.REMOTE || !s.remoteConfigUrl.trim()) {
+      return { ok: false, error: 'Remote config URL not set' }
+    }
+    clearRemoteConfigTimer()
+    const result = await fetchAndApplyRemoteConfig(s.remoteConfigUrl.trim())
+    startRemoteConfigTimer()
+    if (result.ok) updateTrayMenu()
+    return result
   })
 
   // --- App

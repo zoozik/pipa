@@ -17,7 +17,13 @@
     "label": "Config",
     "placeholder": "Path to config",
     "browse": "Browse",
-    "fileNotFound": "File not found"
+    "fileNotFound": "File not found",
+    "local": "Local",
+    "remote": "Remote",
+    "refresh": "Refresh",
+    "urlPlaceholder": "Config URL",
+    "invalidUrl": "Invalid URL",
+    "downloadError": "Failed to download or apply config"
   },
   "settings": {
     "autoStartVpn": "Start VPN automatically when app starts",
