@@ -20,6 +20,7 @@ declare global {
       setConfigPath: (path: string) => Promise<{ ok: boolean; error?: string }>
       pickConfigFile: () => Promise<{ path: string | null }>
       getConfigSource: () => Promise<{ configSource: string; remoteConfigUrl: string }>
+      setRemoteConfigUrl: (url: string) => Promise<void>
       setConfigSource: (payload: { configSource: string; remoteConfigUrl?: string }) => Promise<{ ok: boolean; error?: string }>
       refreshRemoteConfig: () => Promise<{ ok: boolean; error?: string }>
       onLog: (callback: (payload: { line: string; stream: string }) => void) => void

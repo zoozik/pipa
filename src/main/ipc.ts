@@ -100,6 +100,11 @@ export function registerIpc(deps: IpcDeps) {
     return { configSource: s.configSource, remoteConfigUrl: s.remoteConfigUrl }
   })
 
+  ipcMain.handle('config-set-remote-url', (_event, url: string) => {
+    const s = loadSettings()
+    saveSettings({ ...s, remoteConfigUrl: typeof url === 'string' ? url : '' })
+  })
+
   ipcMain.handle('config-set-source', async (_event, payload: { configSource: CONFIG_SOURCE; remoteConfigUrl?: string }) => {
     const current = loadSettings()
     const next: AppSettings = {

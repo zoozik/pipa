@@ -6,6 +6,7 @@ const remoteConfigUrl = defineModel<string>('remoteConfigUrl', { required: true 
 
 defineProps<{
   configSource: typeof CONFIG_SOURCE.LOCAL | typeof CONFIG_SOURCE.REMOTE
+  configPathValid: boolean
   configPathError: string
   remoteConfigUrlError: string
   refreshRemoteDisabled: boolean
@@ -66,6 +67,7 @@ defineProps<{
         v-model="remoteConfigUrl"
         type="url"
         class="config-path-input"
+        :class="{ valid: configSource === CONFIG_SOURCE.REMOTE && configPathValid }"
         :placeholder="$t('config.urlPlaceholder')"
       />
 
@@ -150,6 +152,10 @@ defineProps<{
 
   &::placeholder {
     color: var(--color-text-placeholder);
+  }
+
+  &.valid {
+    border-color: var(--color-success);
   }
 }
 

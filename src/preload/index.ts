@@ -9,6 +9,7 @@ contextBridge.exposeInMainWorld('vpn', {
   setConfigPath: (path: string) => ipcRenderer.invoke('vpn-set-config-path', path),
   pickConfigFile: () => ipcRenderer.invoke('vpn-pick-config-file'),
   getConfigSource: () => ipcRenderer.invoke('config-get-source'),
+  setRemoteConfigUrl: (url: string) => ipcRenderer.invoke('config-set-remote-url', url),
   setConfigSource: (payload: { configSource: string; remoteConfigUrl?: string }) =>
     ipcRenderer.invoke('config-set-source', payload),
   refreshRemoteConfig: () => ipcRenderer.invoke('config-refresh-remote'),

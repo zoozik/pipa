@@ -81,6 +81,7 @@ onMounted(async () => {
           v-model:config-path="configPath"
           v-model:remote-config-url="remoteConfigUrl"
           :config-source="configSource"
+          :config-path-valid="configPathValid"
           :config-path-error="configPathError"
           :remote-config-url-error="remoteConfigUrlError"
           :refresh-remote-disabled="isRefreshRemoteDisabled"

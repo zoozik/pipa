@@ -49,17 +49,24 @@ let remoteConfigTimerId: ReturnType<typeof setInterval> | null = null
 
 function clearRemoteConfigTimer() {
   if (remoteConfigTimerId !== null) {
-    clearInterval(remoteConfigTimerId)
+    clearTimeout(remoteConfigTimerId)
     remoteConfigTimerId = null
   }
 }
 
+function runRemoteConfigUpdateThenScheduleNext() {
+  const s = loadSettings()
+  if (s.configSource !== CONFIG_SOURCE.REMOTE || !s.remoteConfigUrl.trim()) return
+  void fetchAndApplyRemoteConfig(s.remoteConfigUrl.trim()).then(() => {
+    startRemoteConfigTimer()
+  })
+}
+
 function startRemoteConfigTimer() {
   clearRemoteConfigTimer()
-  remoteConfigTimerId = setInterval(() => {
-    const s = loadSettings()
-    if (s.configSource !== CONFIG_SOURCE.REMOTE || !s.remoteConfigUrl.trim()) return
-    void fetchAndApplyRemoteConfig(s.remoteConfigUrl.trim())
+  remoteConfigTimerId = setTimeout(() => {
+    remoteConfigTimerId = null
+    runRemoteConfigUpdateThenScheduleNext()
   }, REMOTE_CONFIG_INTERVAL_MS)
 }
 
