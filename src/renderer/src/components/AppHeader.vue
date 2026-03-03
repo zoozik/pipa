@@ -2,13 +2,16 @@
 import { App } from '@shared/app'
 import type { Locale } from '../i18n'
 
-defineProps<{
+const props = defineProps<{
   alwaysOnTop: boolean
   locale: Locale
-  onToggleAlwaysOnTop: () => void | Promise<void>
-  onMinimizeToTray: () => void
-  onLocaleChange: (locale: Locale) => void | Promise<void>
-  onClose: () => void
+}>()
+
+const emit = defineEmits<{
+  (e: 'toggleAlwaysOnTop'): void
+  (e: 'minimizeToTray'): void
+  (e: 'localeChange', locale: Locale): void
+  (e: 'close'): void
 }>()
 </script>
 
@@ -17,10 +20,10 @@ defineProps<{
     <h1 class="title">{{ $t('header.title', { appName: App.NAME }) }}</h1>
     <div class="header-actions">
       <select
-        :value="locale"
+        :value="props.locale"
         class="locale-select"
         aria-label="Language"
-        @change="(e) => onLocaleChange((e.target as HTMLSelectElement).value as Locale)"
+        @change="(e) => emit('localeChange', (e.target as HTMLSelectElement).value as Locale)"
       >
         <option value="en">{{ $t('locale.en') }}</option>
         <option value="ru">{{ $t('locale.ru') }}</option>
@@ -29,15 +32,17 @@ defineProps<{
         <button
           type="button"
           class="pin-btn"
-          :class="{ active: alwaysOnTop }"
+          :class="{ active: props.alwaysOnTop }"
           :aria-label="$t('header.alwaysOnTop')"
           :title="$t('header.alwaysOnTop')"
-          @click="onToggleAlwaysOnTop"
+          @click="emit('toggleAlwaysOnTop')"
         >
           📌
         </button>
-        <button type="button" class="tray-btn" :aria-label="$t('header.minimizeToTray')" @click="onMinimizeToTray">−</button>
-        <button type="button" class="close-btn" :aria-label="$t('header.close')" @click="onClose">×</button>
+        <button type="button" class="tray-btn" :aria-label="$t('header.minimizeToTray')" @click="emit('minimizeToTray')">
+          −
+        </button>
+        <button type="button" class="close-btn" :aria-label="$t('header.close')" @click="emit('close')">×</button>
       </div>
     </div>
   </header>

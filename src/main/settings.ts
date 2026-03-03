@@ -45,12 +45,13 @@ export function loadSettings(): AppSettings {
     const parsed = JSON.parse(data) as Partial<AppSettings> & { configSource?: string }
     const out: AppSettings = { ...defaults, ...parsed }
 
-    if (!!parsed.configSource) {
+    if (parsed.configSource) {
       out.configSource = normalizeConfigSource(parsed.configSource)
     }
-    if (typeof parsed.remoteConfigUrl === 'string') {
+    if (parsed.remoteConfigUrl) {
       out.remoteConfigUrl = parsed.remoteConfigUrl
     }
+
     return out
   } catch {
     return defaults

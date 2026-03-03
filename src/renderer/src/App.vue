@@ -27,8 +27,7 @@ const {
   pickConfigFile,
   restoreOrLoadConfigPath,
   setConfigSourceLocal,
-  setConfigSourceRemote,
-  refreshRemoteConfig
+  setConfigSourceRemote
 } = useConfigPath()
 
 const {
@@ -55,6 +54,10 @@ function handleLogContainerRef(el: HTMLElement | null) {
   logContainer.value = el
 }
 
+function onRefreshRemote() {
+  void setConfigSourceRemote()
+}
+
 onMounted(async () => {
   await initStatus()
   await restoreOrLoadConfigPath()
@@ -70,10 +73,10 @@ onMounted(async () => {
       <AppHeader
         :always-on-top="alwaysOnTop"
         :locale="locale"
-        :on-toggle-always-on-top="onToggleAlwaysOnTop"
-        :on-minimize-to-tray="onMinimizeToTray"
-        :on-locale-change="onLocaleChange"
-        :on-close="onClose"
+        @toggle-always-on-top="onToggleAlwaysOnTop"
+        @minimize-to-tray="onMinimizeToTray"
+        @locale-change="onLocaleChange"
+        @close="onClose"
       />
 
       <div class="content">
@@ -85,25 +88,25 @@ onMounted(async () => {
           :config-path-error="configPathError"
           :remote-config-url-error="remoteConfigUrlError"
           :refresh-remote-disabled="isRefreshRemoteDisabled"
-          :on-input="applyConfigPath"
-          :on-pick-file="pickConfigFile"
-          :on-config-source-local="setConfigSourceLocal"
-          :on-config-source-remote="setConfigSourceRemote"
-          :on-refresh-remote="() => setConfigSourceRemote()"
+          @input="applyConfigPath"
+          @pick-file="pickConfigFile"
+          @config-source-local="setConfigSourceLocal"
+          @config-source-remote="setConfigSourceRemote"
+          @refresh-remote="onRefreshRemote"
         />
 
         <SettingsCheckboxes
           :auto-start-vpn="autoStartVpn"
           :launch-at-login="launchAtLogin"
-          :on-auto-start-vpn-change="onAutoStartVpnChange"
-          :on-launch-at-login-change="onLaunchAtLoginChange"
+          @auto-start-vpn-change="onAutoStartVpnChange"
+          @launch-at-login-change="onLaunchAtLoginChange"
         />
 
-        <VpnActionButton :running="vpnRunning" :disabled="!configPathValid" :on-toggle="toggleVpn" />
+        <VpnActionButton :running="vpnRunning" :disabled="!configPathValid" @toggle="toggleVpn" />
 
         <TrafficChart :current-outbound="currentOutbound" />
 
-        <LogBlock :log-lines="logLines" :on-container-ref="handleLogContainerRef" />
+        <LogBlock :log-lines="logLines" @container-ref="handleLogContainerRef" />
 
         <Footer />
       </div>

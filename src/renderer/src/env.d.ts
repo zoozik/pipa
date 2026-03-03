@@ -1,7 +1,6 @@
 export {}
 
-
-declare module '@resources/*' {
+declare module '@resources' {
   const url: string
   export default url
 }

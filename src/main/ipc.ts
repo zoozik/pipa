@@ -66,17 +66,19 @@ export function registerIpc(deps: IpcDeps) {
   })
 
   ipcMain.handle('vpn-set-config-path', (_event, path: string) => {
-    if (path && typeof path === 'string' && path.trim() && existsSync(path.trim())) {
-      setCustomConfigPath(path.trim())
-      updateTrayMenu()
-      if (isVpnRunning()) {
-        stopVpn(vpnDeps)
-        setTimeout(() => startVpn(vpnDeps), 200)
-      }
-      return { ok: true }
+    const trimmed = path.trim()
+    if (!trimmed || !existsSync(trimmed)) {
+      const locale = loadSettings().locale
+      return { ok: false, error: t(locale, 'config.fileNotFound') }
     }
-    const locale = loadSettings().locale
-    return { ok: false, error: t(locale, 'config.fileNotFound') }
+
+    setCustomConfigPath(trimmed)
+    updateTrayMenu()
+    if (isVpnRunning()) {
+      stopVpn(vpnDeps)
+      setTimeout(() => startVpn(vpnDeps), 200)
+    }
+    return { ok: true }
   })
 
   ipcMain.handle('vpn-pick-config-file', async () => {
@@ -102,49 +104,53 @@ export function registerIpc(deps: IpcDeps) {
 
   ipcMain.handle('config-set-remote-url', (_event, url: string) => {
     const s = loadSettings()
-    saveSettings({ ...s, remoteConfigUrl: typeof url === 'string' ? url : '' })
+    saveSettings({ ...s, remoteConfigUrl: url })
   })
 
   ipcMain.handle('config-set-source', async (_event, payload: { configSource: CONFIG_SOURCE; remoteConfigUrl?: string }) => {
     const current = loadSettings()
+    const remoteConfigUrl = (payload.remoteConfigUrl || current.remoteConfigUrl).trim()
     const next: AppSettings = {
       ...current,
       configSource: payload.configSource,
-      remoteConfigUrl: typeof payload.remoteConfigUrl === 'string' ? payload.remoteConfigUrl : current.remoteConfigUrl
+      remoteConfigUrl
     }
     saveSettings(next)
 
-    if (payload.configSource === CONFIG_SOURCE.REMOTE) {
-      setCustomConfigPath(null)
-      if (next.remoteConfigUrl.trim()) {
-        const result = await fetchAndApplyRemoteConfig(next.remoteConfigUrl.trim())
-        if (result.ok) {
-          startRemoteConfigTimer()
-          if (isVpnRunning()) {
-            stopVpn(vpnDeps)
-            setTimeout(() => startVpn(vpnDeps), 200)
-          }
-        }
-        updateTrayMenu()
-        return result
-      }
+    if (payload.configSource !== CONFIG_SOURCE.REMOTE) {
+      clearRemoteConfigTimer()
+      updateTrayMenu()
+      return { ok: true }
+    }
+
+    setCustomConfigPath(null)
+
+    if (!remoteConfigUrl) {
       startRemoteConfigTimer()
       updateTrayMenu()
       return { ok: true }
     }
 
-    clearRemoteConfigTimer()
+    const result = await fetchAndApplyRemoteConfig(remoteConfigUrl)
+    if (result.ok) {
+      startRemoteConfigTimer()
+      if (isVpnRunning()) {
+        stopVpn(vpnDeps)
+        setTimeout(() => startVpn(vpnDeps), 200)
+      }
+    }
     updateTrayMenu()
-    return { ok: true }
+    return result
   })
 
   ipcMain.handle('config-refresh-remote', async () => {
     const s = loadSettings()
-    if (s.configSource !== CONFIG_SOURCE.REMOTE || !s.remoteConfigUrl.trim()) {
+    const trimmedUrl = s.remoteConfigUrl.trim()
+    if (s.configSource !== CONFIG_SOURCE.REMOTE || !trimmedUrl) {
       return { ok: false, error: 'Remote config URL not set' }
     }
     clearRemoteConfigTimer()
-    const result = await fetchAndApplyRemoteConfig(s.remoteConfigUrl.trim())
+    const result = await fetchAndApplyRemoteConfig(trimmedUrl)
     startRemoteConfigTimer()
     if (result.ok) updateTrayMenu()
     return result
@@ -199,7 +205,7 @@ export function registerIpc(deps: IpcDeps) {
     if (win && typeof next.alwaysOnTop === 'boolean') {
       setWindowAlwaysOnTop(win, next.alwaysOnTop)
     }
-    if (!!settings.locale) {
+    if (settings.locale) {
       updateTrayMenu()
     }
     return next

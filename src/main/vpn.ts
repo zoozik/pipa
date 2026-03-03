@@ -43,7 +43,7 @@ function startConfigWatcher(configPath: string, deps: VpnDeps, restart: () => vo
 }
 
 export function isVpnRunning(): boolean {
-  return !!vpnProcess
+  return vpnProcess !== null
 }
 
 export function startVpn(deps: VpnDeps): { ok: boolean; error?: string } {

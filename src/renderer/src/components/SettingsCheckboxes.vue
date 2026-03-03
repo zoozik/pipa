@@ -1,20 +1,31 @@
 <script setup lang="ts">
-defineProps<{
+const props = defineProps<{
   autoStartVpn: boolean
   launchAtLogin: boolean
-  onAutoStartVpnChange: (checked: boolean) => void
-  onLaunchAtLoginChange: (checked: boolean) => void
+}>()
+
+const emit = defineEmits<{
+  (e: 'autoStartVpnChange', checked: boolean): void
+  (e: 'launchAtLoginChange', checked: boolean): void
 }>()
 </script>
 
 <template>
   <div class="checkboxes">
     <label class="checkbox-row">
-      <input type="checkbox" :checked="autoStartVpn" @change="(e) => onAutoStartVpnChange((e.target as HTMLInputElement).checked)" />
+      <input
+        type="checkbox"
+        :checked="props.autoStartVpn"
+        @change="(e) => emit('autoStartVpnChange', (e.target as HTMLInputElement).checked)"
+      />
       <span>{{ $t('settings.autoStartVpn') }}</span>
     </label>
     <label class="checkbox-row">
-      <input type="checkbox" :checked="launchAtLogin" @change="(e) => onLaunchAtLoginChange((e.target as HTMLInputElement).checked)" />
+      <input
+        type="checkbox"
+        :checked="props.launchAtLogin"
+        @change="(e) => emit('launchAtLoginChange', (e.target as HTMLInputElement).checked)"
+      />
       <span>{{ $t('settings.launchAtLogin') }}</span>
     </label>
   </div>

@@ -1,12 +1,12 @@
 {
   "compilerOptions": {
+    "baseUrl": ".",
     "composite": true,
     "skipLibCheck": true,
     "module": "ESNext",
     "moduleResolution": "bundler",
     "allowSyntheticDefaultImports": true,
     "strict": true,
-    "noEmit": true,
     "jsx": "preserve",
     "paths": {
       "@renderer/*": ["./src/renderer/src/*"],
@@ -14,5 +14,5 @@
       "@resources/*": ["./resources/*"]
     }
   },
-  "include": ["src/renderer/**/*.ts", "src/renderer/**/*.tsx", "src/renderer/**/*.vue", "shared/**/*.ts"]
+  "include": ["src/renderer/**/*.ts", "src/renderer/**/*.tsx", "src/renderer/**/*.vue", "shared/**/*.ts", "src/renderer/**/*.d.ts"]
 }

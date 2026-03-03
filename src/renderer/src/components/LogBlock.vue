@@ -1,18 +1,28 @@
 <script setup lang="ts">
+import { ref, watch } from 'vue'
 import type { LogEntry } from '../composables/useVpn'
 
 const props = defineProps<{
   logLines: LogEntry[]
-  onContainerRef?: (el: HTMLElement | null) => void
 }>()
 
-function setContainerRef(el: unknown) {
-  props.onContainerRef?.(el as HTMLElement | null)
-}
+const emit = defineEmits<{
+  (e: 'containerRef', el: HTMLElement | null): void
+}>()
+
+const container = ref<HTMLElement | null>(null)
+
+watch(
+  container,
+  (el) => {
+    emit('containerRef', el)
+  },
+  { immediate: true }
+)
 </script>
 
 <template>
-  <div :ref="setContainerRef" class="log-block">
+  <div ref="container" class="log-block">
     <div class="log-content">
       <div v-for="(entry, i) in logLines" :key="i" class="log-line" :class="entry.stream">
         {{ entry.text }}

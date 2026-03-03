@@ -1,15 +1,18 @@
 <script setup lang="ts">
-import logoUrl from '@resources/'
+import logoUrl from '@resources/icon.png'
 
-defineProps<{
+const props = defineProps<{
   running: boolean
   disabled: boolean
-  onToggle: () => void
+}>()
+
+const emit = defineEmits<{
+  (e: 'toggle'): void
 }>()
 </script>
 
 <template>
-  <button type="button" class="action-btn" :class="{ running }" :disabled="disabled" @click="onToggle">
+  <button type="button" class="action-btn" :class="{ running: props.running }" :disabled="props.disabled" @click="emit('toggle')">
     <img :src="logoUrl" alt="" class="action-btn-logo" />
 
     <div class="text">

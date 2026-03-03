@@ -1,0 +1,367 @@
+{
+  "$schema": "https://unpkg.com/@black-duty/sing-box-schema@1.13.0-rc.4/schema.json",
+  "dns": {
+    "servers": [
+      {
+        "tag": "google-alt",
+        "type": "udp",
+        "server": "8.8.4.4",
+        "detour": "proxy"
+      },
+      {
+        "tag": "google",
+        "type": "udp",
+        "server": "8.8.8.8",
+        "detour": "proxy"
+      },
+      {
+        "tag": "cloudflare",
+        "type": "udp",
+        "server": "1.1.1.1",
+        "detour": "proxy"
+      },
+      {
+        "tag": "yandex",
+        "type": "udp",
+        "server": "77.88.8.8",
+        "detour": "proxy"
+      },
+      {
+        "tag": "yandex-alt",
+        "type": "udp",
+        "server": "77.88.8.1",
+        "detour": "proxy"
+      },
+      {
+        "tag": "local",
+        "type": "local",
+        "detour": "direct"
+      },
+      {
+        "type": "fakeip",
+        "tag": "fakeip",
+        "inet4_range": "198.18.0.0/15",
+        "inet6_range": "fc00::/18"
+      }
+    ],
+    "rules": [
+      {
+        "domain_suffix": [
+          ".local",
+          ".lan"
+        ],
+        "server": "local"
+      },
+      {
+        "server": "google-alt"
+      }
+    ],
+    "final": "google-alt",
+    "strategy": "ipv4_only",
+    "disable_cache": false
+  },
+  "inbounds": [
+    {
+      "endpoint_independent_nat": true,
+      "type": "tun",
+      "tag": "tun-in",
+      "address": [
+        "172.19.0.1/30"
+      ],
+      "mtu": 1400,
+      "stack": "mixed",
+      "auto_route": true,
+      "strict_route": true
+    }
+  ],
+  "log": {
+    "level": "info"
+  },
+  "outbounds": [
+    {
+      "type": "urltest",
+      "tag": "proxy",
+      "outbounds": [
+        "DFT-VLESS-1",
+        "DFT-VLESS-ALT",
+        "DFT-TROJAN"
+      ],
+      "url": "https://www.gstatic.com/generate_204",
+      "interval": "5m",
+      "tolerance": 50
+    },
+    {
+      "type": "direct",
+      "tag": "direct"
+    },
+    {
+      "type": "vless",
+      "tag": "DFT-VLESS-1",
+      "server": "45.12.69.19",
+      "server_port": 443,
+      "uuid": "9c748fec-00ec-4a78-b607-380e96edbf4b",
+      "flow": "xtls-rprx-vision",
+      "tls": {
+        "enabled": true,
+        "server_name": "yandex.ru",
+        "reality": {
+          "enabled": true,
+          "public_key": "Iijl9vnlBNJO9Q-Kjas-KdWD911B1_l6YJRgduZunQI",
+          "short_id": "2989715db6efc379"
+        },
+        "utls": {
+          "enabled": true,
+          "fingerprint": "chrome"
+        }
+      }
+    },
+    {
+      "type": "vless",
+      "tag": "DFT-VLESS-ALT",
+      "server": "45.12.69.19",
+      "server_port": 2053,
+      "uuid": "9c748fec-00ec-4a78-b607-380e96edbf4b",
+      "flow": "xtls-rprx-vision",
+      "tls": {
+        "enabled": true,
+        "server_name": "rutube.ru",
+        "reality": {
+          "enabled": true,
+          "public_key": "ElaYL54Nq_T1f5M3xMRFBB_-VWb4XHZjDaYvzzz3gDk",
+          "short_id": "3a5746b45d79de29"
+        },
+        "utls": {
+          "enabled": true,
+          "fingerprint": "chrome"
+        }
+      }
+    },
+    {
+      "type": "trojan",
+      "tag": "DFT-TROJAN",
+      "server": "45.12.69.19",
+      "server_port": 2087,
+      "password": "pc:ophelia13",
+      "tls": {
+        "enabled": true,
+        "server_name": "m.vk.ru",
+        "reality": {
+          "enabled": true,
+          "public_key": "TQ-e5Nxivfw5RS6gWQk6Kmj7f19-R7tFlCis9TkvtHI",
+          "short_id": "8b86a9b5183c4f56"
+        },
+        "utls": {
+          "enabled": true,
+          "fingerprint": "chrome"
+        }
+      }
+    }
+  ],
+  "route": {
+    "final": "direct",
+    "auto_detect_interface": true,
+    "default_domain_resolver": {
+      "server": "google-alt",
+      "strategy": "prefer_ipv4"
+    },
+    "rules": [
+      {
+        "port": 53,
+        "network": [
+          "udp",
+          "tcp"
+        ],
+        "action": "hijack-dns"
+      },
+      {
+        "ip_version": 6,
+        "outbound": "proxy"
+      },
+      {
+        "action": "hijack-dns",
+        "protocol": "dns"
+      },
+      {
+        "action": "sniff",
+        "inbound": "tun-in"
+      },
+      {
+        "ip_is_private": true,
+        "outbound": "direct"
+      },
+      {
+        "action": "resolve",
+        "strategy": "prefer_ipv4",
+        "inbound": "tun-in"
+      },
+      {
+        "action": "reject",
+        "ip_cidr": [
+          "224.0.0.0/3",
+          "ff00::/8"
+        ],
+        "source_ip_cidr": [
+          "224.0.0.0/3",
+          "ff00::/8"
+        ]
+      },
+      {
+        "protocol": "bittorrent",
+        "outbound": "direct"
+      },
+      {
+        "domain": [
+          "2ip.ru"
+        ],
+        "outbound": "proxy"
+      },
+      {
+        "outbound": "proxy",
+        "protocol": [
+          "stun"
+        ]
+      },
+      {
+        "rule_set": [
+          "geosite-antizapret",
+          "geosite-telegram",
+          "geosite-google",
+          "geosite-microsoft",
+          "geoip-telegram"
+        ],
+        "outbound": "proxy"
+      },
+      {
+        "domain": [
+          "json-schema.org",
+          "ya.ru",
+          "4pda.to",
+          "2ip.ru",
+          "ipleak.net",
+          "browserleaks.com",
+          "whoer.net",
+          "deepfacelab.app",
+          "www.electronjs.org"
+        ],
+        "outbound": "proxy"
+      },
+      {
+        "domain_regex": "(.\\.)?((babylonjs\\.com)|(tiktok\\.com)|(pornhub\\.com)|(phncdn\\.com)|(fastly\\.net)|(epnnet\\.dev)|(e\\.pn)|(jdownloader\\.org)|(hf\\.space))",
+        "outbound": "proxy"
+      },
+      {
+        "ip_cidr": [
+          "188.34.130.83",
+          "46.174.50.9"
+        ],
+        "outbound": "proxy"
+      },
+      {
+        "rule_set": [
+          "geosite-facebook",
+          "geosite-github",
+          "geosite-openai",
+          "geosite-cursor",
+          "geosite-nvidia",
+          "geosite-speedtest"
+        ],
+        "outbound": "proxy"
+      }
+    ],
+    "rule_set": [
+      {
+        "tag": "geosite-antizapret",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://github.com/savely-krasovsky/antizapret-sing-box/releases/latest/download/antizapret.srs",
+        "download_detour": "proxy",
+        "update_interval": "24h"
+      },
+      {
+        "tag": "geosite-google",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://raw.github.com/SagerNet/sing-geosite/rule-set/geosite-google.srs",
+        "download_detour": "proxy",
+        "update_interval": "24h"
+      },
+      {
+        "tag": "geosite-microsoft",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://raw.github.com/SagerNet/sing-geosite/rule-set/geosite-microsoft.srs",
+        "download_detour": "proxy",
+        "update_interval": "24h"
+      },
+      {
+        "tag": "geosite-telegram",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-telegram.srs",
+        "download_detour": "proxy",
+        "update_interval": "24h"
+      },
+      {
+        "tag": "geoip-telegram",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo-lite/geoip/telegram.srs",
+        "download_detour": "proxy",
+        "update_interval": "24h"
+      },
+      {
+        "tag": "geosite-github",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://raw.github.com/SagerNet/sing-geosite/rule-set/geosite-github.srs",
+        "download_detour": "proxy",
+        "update_interval": "24h"
+      },
+      {
+        "tag": "geosite-facebook",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://raw.github.com/SagerNet/sing-geosite/rule-set/geosite-facebook.srs",
+        "download_detour": "proxy",
+        "update_interval": "24h"
+      },
+      {
+        "tag": "geosite-openai",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-openai.srs",
+        "download_detour": "proxy",
+        "update_interval": "24h"
+      },
+      {
+        "tag": "geosite-cursor",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/cursor.srs",
+        "download_detour": "proxy",
+        "update_interval": "24h"
+      },
+      {
+        "tag": "geosite-nvidia",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/nvidia.srs",
+        "download_detour": "proxy",
+        "update_interval": "24h"
+      },
+      {
+        "tag": "geosite-speedtest",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/sing/geo/geosite/speedtest.srs",
+        "download_detour": "proxy",
+        "update_interval": "24h"
+      }
+    ]
+  },
+  "experimental": {
+    "cache_file": {
+      "enabled": false
+    }
+  }
+}

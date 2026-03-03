@@ -4,17 +4,20 @@ import { CONFIG_SOURCE } from '@shared/config'
 const configPath = defineModel<string>('configPath', { required: true })
 const remoteConfigUrl = defineModel<string>('remoteConfigUrl', { required: true })
 
-defineProps<{
+const props = defineProps<{
   configSource: typeof CONFIG_SOURCE.LOCAL | typeof CONFIG_SOURCE.REMOTE
   configPathValid: boolean
   configPathError: string
   remoteConfigUrlError: string
   refreshRemoteDisabled: boolean
-  onInput: () => void
-  onPickFile: () => void
-  onConfigSourceLocal: () => void
-  onConfigSourceRemote: () => void
-  onRefreshRemote: () => void
+}>()
+
+const emit = defineEmits<{
+  (e: 'input'): void
+  (e: 'pickFile'): void
+  (e: 'configSourceLocal'): void
+  (e: 'configSourceRemote'): void
+  (e: 'refreshRemote'): void
 }>()
 </script>
 
@@ -23,13 +26,13 @@ defineProps<{
     <label class="config-path-label">
       {{ $t('config.label') }}
 
-      <span v-if="configSource === CONFIG_SOURCE.LOCAL && configPathError" class="config-path-error">
+      <span v-if="props.configSource === CONFIG_SOURCE.LOCAL && props.configPathError" class="config-path-error">
         -
-        {{ configPathError }}
+        {{ props.configPathError }}
       </span>
-      <span v-else-if="configSource === CONFIG_SOURCE.REMOTE && remoteConfigUrlError" class="config-path-error">
+      <span v-else-if="props.configSource === CONFIG_SOURCE.REMOTE && props.remoteConfigUrlError" class="config-path-error">
         -
-        {{ remoteConfigUrlError }}
+        {{ props.remoteConfigUrlError }}
       </span>
     </label>
 
@@ -37,16 +40,16 @@ defineProps<{
       <button
         type="button"
         class="tab"
-        :class="{ active: configSource === CONFIG_SOURCE.LOCAL }"
-        @click="onConfigSourceLocal"
+        :class="{ active: props.configSource === CONFIG_SOURCE.LOCAL }"
+        @click="emit('configSourceLocal')"
       >
         {{ $t('config.local') }}
       </button>
       <button
         type="button"
         class="tab"
-        :class="{ active: configSource === CONFIG_SOURCE.REMOTE }"
-        @click="onConfigSourceRemote"
+        :class="{ active: props.configSource === CONFIG_SOURCE.REMOTE }"
+        @click="emit('configSourceRemote')"
       >
         {{ $t('config.remote') }}
       </button>
@@ -54,29 +57,29 @@ defineProps<{
 
     <div class="config-path-input-row">
       <input
-        v-if="configSource === CONFIG_SOURCE.LOCAL"
+        v-if="props.configSource === CONFIG_SOURCE.LOCAL"
         v-model="configPath"
         type="text"
         class="config-path-input"
         :placeholder="$t('config.placeholder')"
         readonly
-        @input="onInput"
+        @input="emit('input')"
       />
       <input
         v-else
         v-model="remoteConfigUrl"
         type="url"
         class="config-path-input"
-        :class="{ valid: configSource === CONFIG_SOURCE.REMOTE && configPathValid }"
+        :class="{ valid: props.configSource === CONFIG_SOURCE.REMOTE && props.configPathValid }"
         :placeholder="$t('config.urlPlaceholder')"
       />
 
       <button
-        v-if="configSource === CONFIG_SOURCE.LOCAL"
+        v-if="props.configSource === CONFIG_SOURCE.LOCAL"
         type="button"
         class="config-path-browse"
         :aria-label="$t('config.browse')"
-        @click="onPickFile"
+        @click="emit('pickFile')"
       >
         {{ $t('config.browse') }}
       </button>
@@ -85,8 +88,8 @@ defineProps<{
         type="button"
         class="config-path-browse"
         :aria-label="$t('config.refresh')"
-        :disabled="refreshRemoteDisabled"
-        @click="onRefreshRemote"
+        :disabled="props.refreshRemoteDisabled"
+        @click="emit('refreshRemote')"
       >
         {{ $t('config.refresh') }}
       </button>

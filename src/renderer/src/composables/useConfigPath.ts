@@ -3,8 +3,7 @@ import { useI18n } from 'vue-i18n'
 
 import { CONFIG_SOURCE } from '@shared/config'
 
-const URL_REGEX =
-  /^https?:\/\/[^\s/$.?#].[^\s]*$/i
+const URL_REGEX = /^https?:\/\/[^\s/$.?#].[^\s]*$/i
 
 const REMOTE_URL_DEBOUNCE_MS = 2000
 const REMOTE_URL_SAVE_DEBOUNCE_MS = 400
@@ -31,8 +30,7 @@ export function useConfigPath() {
   }
 
   const isRefreshRemoteDisabled = computed(() => {
-    const raw = typeof remoteConfigUrl.value === 'string' ? remoteConfigUrl.value : ''
-    const trimmed = raw.trim()
+    const trimmed = remoteConfigUrl.value.trim()
     const urlValid = !!trimmed && validateRemoteUrl(trimmed)
     const configAbsent = configSource.value === CONFIG_SOURCE.REMOTE && !configPathValid.value
     return !urlValid || remoteConfigLoading.value || configAbsent
@@ -47,10 +45,11 @@ export function useConfigPath() {
         remoteUrlDebounceId = null
       }
       if (src !== CONFIG_SOURCE.REMOTE) return
-      const raw = typeof url === 'string' ? url : ''
-      const trimmed = raw.trim()
+
+      const trimmed = (url as string | undefined)?.trim() ?? ''
       if (!trimmed || !validateRemoteUrl(trimmed)) return
       if (trimmed === lastFetched && valid) return
+
       remoteUrlDebounceId = setTimeout(() => {
         remoteUrlDebounceId = null
         void setConfigSourceRemote(trimmed)
@@ -68,7 +67,8 @@ export function useConfigPath() {
         remoteUrlSaveDebounceId = null
       }
       if (src !== CONFIG_SOURCE.REMOTE) return
-      const raw = typeof url === 'string' ? url : ''
+
+      const raw = (url as string | undefined) ?? ''
       remoteUrlSaveDebounceId = setTimeout(() => {
         remoteUrlSaveDebounceId = null
         void window.vpn.setRemoteConfigUrl(raw)
@@ -80,7 +80,7 @@ export function useConfigPath() {
   async function loadConfigSource() {
     const { configSource: src, remoteConfigUrl: url } = await window.vpn.getConfigSource()
     configSource.value = src === CONFIG_SOURCE.REMOTE ? CONFIG_SOURCE.REMOTE : CONFIG_SOURCE.LOCAL
-    remoteConfigUrl.value = typeof url === 'string' ? url : ''
+    remoteConfigUrl.value = url
   }
 
   async function updateEffectiveValid() {
@@ -122,10 +122,13 @@ export function useConfigPath() {
   }
 
   async function setConfigSourceLocal() {
+    configSource.value = CONFIG_SOURCE.LOCAL
+
     remoteConfigUrlError.value = ''
+
     const result = await window.vpn.setConfigSource({ configSource: CONFIG_SOURCE.LOCAL })
     if (!result.ok) return
-    configSource.value = CONFIG_SOURCE.LOCAL
+
     const savedPath = localStorage.getItem('vpn-config-path')
     if (savedPath) {
       configPath.value = savedPath
@@ -138,27 +141,32 @@ export function useConfigPath() {
   }
 
   async function setConfigSourceRemote(url?: string) {
+    configSource.value = CONFIG_SOURCE.REMOTE
+
     remoteConfigUrlError.value = ''
-    const raw = url ?? remoteConfigUrl.value
-    const urlToUse = (typeof raw === 'string' ? raw : '').trim()
+    const raw = (url ?? remoteConfigUrl.value) || ''
+
+    const urlToUse = raw.trim()
+
     if (urlToUse && !validateRemoteUrl(urlToUse)) {
       remoteConfigUrlError.value = t('config.invalidUrl')
       return
     }
+
     remoteConfigLoading.value = true
     try {
       const result = await window.vpn.setConfigSource({
         configSource: CONFIG_SOURCE.REMOTE,
-        remoteConfigUrl: urlToUse || undefined
+        remoteConfigUrl: urlToUse
       })
       if (!result.ok) {
         remoteConfigUrlError.value = result.error ?? t('config.downloadError')
         configPathValid.value = false
         return
       }
-      const currentUrl = (typeof remoteConfigUrl.value === 'string' ? remoteConfigUrl.value : '').trim()
+      const currentUrl = remoteConfigUrl.value.trim()
       if (urlToUse && currentUrl !== urlToUse) return
-      configSource.value = CONFIG_SOURCE.REMOTE
+
       if (urlToUse) {
         remoteConfigUrl.value = urlToUse
         lastFetchedRemoteUrl.value = urlToUse
@@ -177,7 +185,7 @@ export function useConfigPath() {
       const result = await window.vpn.refreshRemoteConfig()
       if (result.ok) {
         await updateEffectiveValid()
-        const url = (typeof remoteConfigUrl.value === 'string' ? remoteConfigUrl.value : '').trim()
+        const url = remoteConfigUrl.value.trim()
         if (url) lastFetchedRemoteUrl.value = url
       } else {
         remoteConfigUrlError.value = result.error ?? t('config.downloadError')
@@ -193,7 +201,7 @@ export function useConfigPath() {
     if (configSource.value === CONFIG_SOURCE.REMOTE) {
       await updateEffectiveValid()
       if (configPathValid.value) {
-        lastFetchedRemoteUrl.value = (typeof remoteConfigUrl.value === 'string' ? remoteConfigUrl.value : '').trim()
+        lastFetchedRemoteUrl.value = remoteConfigUrl.value.trim()
       }
       configPathError.value = ''
       return

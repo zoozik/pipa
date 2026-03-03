@@ -20,9 +20,8 @@ export function setupUpdater(getWindow: () => BrowserWindow | null): void {
 
   checkForUpdate()
 
-  setInterval(() => {
-    checkForUpdate()
-  }, 3600)
+  const hourMs = 60 * 60 * 1000
+  setInterval(checkForUpdate, hourMs)
 }
 
 const checkForUpdate = () => {
