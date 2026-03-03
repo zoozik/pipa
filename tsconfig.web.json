@@ -11,8 +11,8 @@
     "paths": {
       "@renderer/*": ["./src/renderer/src/*"],
       "@shared/*": ["./shared/*"],
-      "@logo": ["./resources/icon.png"]
+      "@resources/*": ["./resources/*"]
     }
   },
-  "include": ["src/renderer/**/*.ts", "src/renderer/**/*.tsx", "src/renderer/**/*.vue","shared/**/*.ts"]
+  "include": ["src/renderer/**/*.ts", "src/renderer/**/*.tsx", "src/renderer/**/*.vue", "shared/**/*.ts"]
 }

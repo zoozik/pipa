@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import logoUrl from '@logo'
+import logoUrl from '@resources/'
 
 defineProps<{
   running: boolean

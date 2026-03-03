@@ -16,8 +16,7 @@ export default defineConfig({
       alias: {
         '@renderer': resolve('src/renderer/src'),
         '@shared': resolve('shared'),
-        '@logo': resolve('resources/icon.png'),
-        '@Logo': resolve('resources/icon.png')
+        '@resources': resolve('resources')
       }
     },
     css: {

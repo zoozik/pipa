@@ -18,12 +18,9 @@
     "paths": {
       "@renderer/*": ["./src/renderer/src/*"],
       "@shared/*": ["./shared/*"],
-      "@logo": ["./resources/icon.png"]
+      "@resources/*": ["./resources/*"]
     }
   },
   "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue"],
-  "references": [
-    { "path": "./tsconfig.node.json" },
-    { "path": "./tsconfig.web.json" }
-  ]
+  "references": [{ "path": "./tsconfig.node.json" }, { "path": "./tsconfig.web.json" }]
 }

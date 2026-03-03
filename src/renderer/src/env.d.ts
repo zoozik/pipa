@@ -1,11 +1,7 @@
 export {}
 
-declare module '@logo' {
-  const url: string
-  export default url
-}
 
-declare module '@Logo' {
+declare module '@resources/*' {
   const url: string
   export default url
 }
