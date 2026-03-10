@@ -6,7 +6,6 @@ import { dirname } from 'path'
 export interface VpnDeps {
   getWindow: () => BrowserWindow | null
   getPaths: () => { singBoxPath: string; configPath: string }
-  isElevated: () => boolean
   isDev: boolean
   updateTrayMenu: () => void
   onVpnStarted?: () => void
@@ -49,13 +48,6 @@ export function isVpnRunning(): boolean {
 export function startVpn(deps: VpnDeps): { ok: boolean; error?: string } {
   if (vpnProcess) {
     return { ok: true }
-  }
-
-  if (deps.isDev && !deps.isElevated()) {
-    const msg =
-      'Для запуска VPN в режиме разработки запустите приложение от имени администратора (правый клик по терминалу → «Запуск от имени администратора», затем npm run dev).'
-    deps.getWindow()?.webContents.send('vpn-status', { running: false, error: msg })
-    return { ok: false, error: msg }
   }
 
   const { singBoxPath, configPath } = deps.getPaths()
