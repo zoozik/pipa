@@ -21,11 +21,11 @@ export interface AppSettings {
 }
 
 export const DEFAULT_SETTINGS: AppSettings = {
-  autoStartVpn: true,
-  launchAtLogin: true,
+  autoStartVpn: false,
+  launchAtLogin: false,
   alwaysOnTop: false,
   locale: 'en',
-  configSource: CONFIG_SOURCE.REMOTE,
+  configSource: CONFIG_SOURCE.LOCAL,
   remoteConfigUrl: ''
 }
 

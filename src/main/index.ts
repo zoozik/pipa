@@ -2,7 +2,7 @@ import { app } from 'electron'
 import { existsSync } from 'fs'
 
 import { registerIpc } from './ipc'
-import { reportError } from './logger'
+import { debugLog, reportError } from './logger'
 import { startNetworkStatsPolling, stopNetworkStatsPolling } from './networkStats'
 import { CONFIG_SOURCE } from '../../shared/config'
 import { getPaths } from './paths'
@@ -24,6 +24,8 @@ process.on('unhandledRejection', (reason) => {
   reportError('Unhandled promise rejection', reason)
   process.exit(1)
 })
+
+debugLog('main process loaded')
 
 const gotSingleInstanceLock = app.requestSingleInstanceLock()
 // if (!gotSingleInstanceLock) {
@@ -81,6 +83,7 @@ function isConfigPathValid(): boolean {
 const vpnDeps = {
   getWindow,
   getPaths: getPathsWithCustom,
+  isElevated,
   isDev,
   updateTrayMenu: () => {},
   onVpnStarted: () => {},
@@ -104,15 +107,15 @@ vpnDeps.updateTrayMenu = updateTrayMenu
 
 void (async () => {
   await app.whenReady()
+  debugLog('app.whenReady() done')
 
   const settings = loadSettings()
   if (app.isPackaged && (process.platform === 'win32' || process.platform === 'darwin')) {
-    const loginSettings: { openAtLogin: boolean; path?: string; args?: string[] } = {
+    const loginSettings: { openAtLogin: boolean; path?: string } = {
       openAtLogin: settings.launchAtLogin
     }
     if (process.platform === 'win32') {
       loginSettings.path = process.execPath
-      loginSettings.args = []
     }
     app.setLoginItemSettings(loginSettings)
   }
@@ -128,24 +131,7 @@ void (async () => {
     loadSettings,
     onReady: () => {
       const s = loadSettings()
-
-      if (!s.autoStartVpn) return
-
-      if (s.configSource === CONFIG_SOURCE.REMOTE) {
-        const trimmedUrl = s.remoteConfigUrl.trim()
-        if (!trimmedUrl) return
-
-        void fetchAndApplyRemoteConfig(trimmedUrl).then((result) => {
-          if (!result.ok || !isConfigPathValid()) return
-          setTimeout(() => startVpn(vpnDeps), 500)
-        })
-
-        return
-      }
-
-      if (!isConfigPathValid()) return
-
-      setTimeout(() => startVpn(vpnDeps), 500)
+      if (s.autoStartVpn) setTimeout(() => startVpn(vpnDeps), 500)
     },
     onClosed: () => {
       if (trayApi) {

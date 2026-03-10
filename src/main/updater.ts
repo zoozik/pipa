@@ -1,6 +1,8 @@
 import type { BrowserWindow } from 'electron'
 import { autoUpdater } from 'electron-updater'
 
+import { debugLog } from './logger'
+
 export function setupUpdater(getWindow: () => BrowserWindow | null): void {
   autoUpdater.autoDownload = true
   autoUpdater.autoInstallOnAppQuit = true
@@ -12,6 +14,10 @@ export function setupUpdater(getWindow: () => BrowserWindow | null): void {
     }
   })
 
+  autoUpdater.on('error', (err: Error) => {
+    debugLog(`Updater error: ${err.message}`)
+  })
+
   checkForUpdate()
 
   const hourMs = 60 * 60 * 1000
@@ -19,7 +25,9 @@ export function setupUpdater(getWindow: () => BrowserWindow | null): void {
 }
 
 const checkForUpdate = () => {
-  void autoUpdater.checkForUpdatesAndNotify()
+  autoUpdater.checkForUpdatesAndNotify().catch((err: unknown) => {
+    debugLog(`Updater check failed: ${err instanceof Error ? err.message : String(err)}`)
+  })
 }
 
 export function quitAndInstall(): void {
