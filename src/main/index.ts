@@ -38,7 +38,7 @@ app.on('second-instance', () => {
   win.focus()
 })
 
-const REMOTE_CONFIG_INTERVAL_MS = 60 * 60 * 1000
+const REMOTE_CONFIG_INTERVAL_MS = 3 * 60 * 60 * 1000
 
 let customConfigPath: string | null = null
 let trayApi: TrayApi | null = null
