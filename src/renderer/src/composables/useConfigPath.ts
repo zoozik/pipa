@@ -128,7 +128,7 @@ export function useConfigPath() {
       return
     }
 
-    if (!remoteConfigLoading.value) return
+    if (remoteConfigLoading.value) return
 
     remoteConfigLoading.value = true
     try {
