@@ -23,7 +23,10 @@
     "refresh": "Refresh",
     "urlPlaceholder": "Config URL",
     "invalidUrl": "Invalid URL",
-    "downloadError": "Failed to download or apply config"
+    "downloadError": "Failed to download or apply config",
+    "edit": "Edit",
+    "apply": "Apply",
+    "cancel": "Cancel"
   },
   "settings": {
     "autoStartVpn": "Start VPN automatically when app starts",

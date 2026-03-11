@@ -4,7 +4,8 @@ import { join } from 'path'
 
 import { App } from '../../shared/app'
 
-const DEBUG_LOG_DIR = process.env.LOCALAPPDATA?.trim() ? join(process.env.LOCALAPPDATA.trim(), App.NAME) : null
+const rawLocalAppData = process.env.LOCALAPPDATA?.trim()
+const DEBUG_LOG_DIR = rawLocalAppData ? join(rawLocalAppData, App.NAME) : null
 
 export function debugLog(msg: string): void {
   if (!DEBUG_LOG_DIR) return

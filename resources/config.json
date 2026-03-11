@@ -80,15 +80,26 @@
   "outbounds": [
     {
       "type": "urltest",
-      "tag": "proxy",
+      "tag": "auto",
       "outbounds": [
         "DFT-VLESS-1",
         "DFT-VLESS-ALT",
         "DFT-TROJAN"
       ],
-      "url": "https://www.gstatic.com/generate_204",
+      "url": "https://cp.cloudflare.com/generate_204",
       "interval": "5m",
-      "tolerance": 50
+      "tolerance": 100,
+      "idle_timeout": "10m"
+    },
+    {
+      "type": "selector",
+      "tag": "proxy",
+      "outbounds": [
+        "auto",
+        "DFT-VLESS-1",
+        "DFT-VLESS-ALT",
+        "DFT-TROJAN"
+      ]
     },
     {
       "type": "direct",

@@ -1,12 +1,9 @@
-import { computed, ref, watch } from 'vue'
+import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import { CONFIG_SOURCE } from '@shared/config'
 
 const URL_REGEX = /^https?:\/\/[^\s/$.?#].[^\s]*$/i
-
-const REMOTE_URL_DEBOUNCE_MS = 2000
-const REMOTE_URL_SAVE_DEBOUNCE_MS = 400
 
 export function useConfigPath() {
   const { t } = useI18n()
@@ -15,11 +12,13 @@ export function useConfigPath() {
   const configPathError = ref<string>('')
   const configPathValid = ref<boolean>(false)
 
-  const configSource = ref<typeof CONFIG_SOURCE.LOCAL | typeof CONFIG_SOURCE.REMOTE>(CONFIG_SOURCE.LOCAL)
+  const configSource = ref<CONFIG_SOURCE>(CONFIG_SOURCE.LOCAL)
   const remoteConfigUrl = ref<string>('')
   const remoteConfigUrlError = ref<string>('')
   const remoteConfigLoading = ref<boolean>(false)
   const lastFetchedRemoteUrl = ref<string>('')
+  const isEditingRemoteUrl = ref<boolean>(false)
+  const remoteConfigDraft = ref<string>('')
 
   function getConfigInvalidMessage(): string {
     return t('config.fileNotFound')
@@ -36,46 +35,17 @@ export function useConfigPath() {
     return !urlValid || remoteConfigLoading.value || configAbsent
   })
 
-  let remoteUrlDebounceId: ReturnType<typeof setTimeout> | null = null
-  watch(
-    () => [configSource.value, remoteConfigUrl.value, configPathValid.value, lastFetchedRemoteUrl.value] as const,
-    ([src, url, valid, lastFetched]) => {
-      if (remoteUrlDebounceId !== null) {
-        clearTimeout(remoteUrlDebounceId)
-        remoteUrlDebounceId = null
-      }
-      if (src !== CONFIG_SOURCE.REMOTE) return
+  function beginEditRemoteUrl() {
+    remoteConfigDraft.value = remoteConfigUrl.value
+    remoteConfigUrlError.value = ''
+    isEditingRemoteUrl.value = true
+  }
 
-      const trimmed = (url as string | undefined)?.trim() ?? ''
-      if (!trimmed || !validateRemoteUrl(trimmed)) return
-      if (trimmed === lastFetched && valid) return
-
-      remoteUrlDebounceId = setTimeout(() => {
-        remoteUrlDebounceId = null
-        void setConfigSourceRemote(trimmed)
-      }, REMOTE_URL_DEBOUNCE_MS)
-    },
-    { flush: 'sync' }
-  )
-
-  let remoteUrlSaveDebounceId: ReturnType<typeof setTimeout> | null = null
-  watch(
-    () => [configSource.value, remoteConfigUrl.value] as const,
-    ([src, url]) => {
-      if (remoteUrlSaveDebounceId !== null) {
-        clearTimeout(remoteUrlSaveDebounceId)
-        remoteUrlSaveDebounceId = null
-      }
-      if (src !== CONFIG_SOURCE.REMOTE) return
-
-      const raw = (url as string | undefined) ?? ''
-      remoteUrlSaveDebounceId = setTimeout(() => {
-        remoteUrlSaveDebounceId = null
-        void window.vpn.setRemoteConfigUrl(raw)
-      }, REMOTE_URL_SAVE_DEBOUNCE_MS)
-    },
-    { flush: 'sync' }
-  )
+  function cancelEditRemoteUrl() {
+    isEditingRemoteUrl.value = false
+    remoteConfigDraft.value = ''
+    remoteConfigUrlError.value = ''
+  }
 
   async function loadConfigSource() {
     const { configSource: src, remoteConfigUrl: url } = await window.vpn.getConfigSource()
@@ -113,6 +83,7 @@ export function useConfigPath() {
 
   async function pickConfigFile() {
     const result = await window.vpn.pickConfigFile()
+
     if (result.path) {
       configPath.value = result.path
       configPathError.value = ''
@@ -122,6 +93,8 @@ export function useConfigPath() {
   }
 
   async function setConfigSourceLocal() {
+    cancelEditRemoteUrl()
+
     configSource.value = CONFIG_SOURCE.LOCAL
 
     remoteConfigUrlError.value = ''
@@ -141,6 +114,8 @@ export function useConfigPath() {
   }
 
   async function setConfigSourceRemote(url?: string) {
+    cancelEditRemoteUrl()
+
     configSource.value = CONFIG_SOURCE.REMOTE
 
     remoteConfigUrlError.value = ''
@@ -152,6 +127,8 @@ export function useConfigPath() {
       remoteConfigUrlError.value = t('config.invalidUrl')
       return
     }
+
+    if (!remoteConfigLoading.value) return
 
     remoteConfigLoading.value = true
     try {
@@ -176,6 +153,24 @@ export function useConfigPath() {
     } finally {
       remoteConfigLoading.value = false
     }
+  }
+
+  async function applyRemoteUrl() {
+    const trimmed = remoteConfigDraft.value.trim()
+    if (!trimmed || !validateRemoteUrl(trimmed)) {
+      remoteConfigUrlError.value = t('config.invalidUrl')
+      return
+    }
+
+    await setConfigSourceRemote(trimmed)
+    const appliedUrl = remoteConfigUrl.value.trim()
+    if (!appliedUrl || appliedUrl !== trimmed) return
+
+    await window.vpn.start()
+
+    isEditingRemoteUrl.value = false
+    remoteConfigDraft.value = ''
+    remoteConfigUrlError.value = ''
   }
 
   async function refreshRemoteConfig() {
@@ -231,6 +226,8 @@ export function useConfigPath() {
     remoteConfigUrl,
     remoteConfigUrlError,
     isRefreshRemoteDisabled,
+    isEditingRemoteUrl,
+    remoteConfigDraft,
     loadConfigPath,
     loadConfigSource,
     applyConfigPath,
@@ -240,6 +237,9 @@ export function useConfigPath() {
     setConfigSourceLocal,
     setConfigSourceRemote,
     refreshRemoteConfig,
-    updateEffectiveValid
+    updateEffectiveValid,
+    beginEditRemoteUrl,
+    cancelEditRemoteUrl,
+    applyRemoteUrl
   }
 }

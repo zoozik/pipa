@@ -2,11 +2,11 @@ import { app } from 'electron'
 import { existsSync } from 'fs'
 
 import { registerIpc } from './ipc'
-import { debugLog, reportError } from './logger'
+import { reportError } from './logger'
 import { startNetworkStatsPolling, stopNetworkStatsPolling } from './networkStats'
 import { CONFIG_SOURCE } from '../../shared/config'
 import { getPaths } from './paths'
-import { getTrayIconPath, isElevated, isDev } from './platform'
+import { getTrayIconPath, isDev } from './platform'
 import { fetchAndApplyRemoteConfig } from './remoteConfig'
 import { loadSettings } from './settings'
 import type { TrayApi } from './tray'
@@ -25,54 +25,57 @@ process.on('unhandledRejection', (reason) => {
   process.exit(1)
 })
 
-debugLog('main process loaded')
-
-const gotSingleInstanceLock = app.requestSingleInstanceLock()
-// if (!gotSingleInstanceLock) {
-//   app.quit()
-//   process.exit(0)
-// }
+app.requestSingleInstanceLock()
 
 app.on('second-instance', () => {
   const win = getWindow()
-  if (win) {
-    if (win.isMinimized()) win.restore()
-    win.focus()
+  if (!win) return
+
+  if (win.isMinimized()) {
+    win.restore()
   }
+
+  win.focus()
 })
 
 const REMOTE_CONFIG_INTERVAL_MS = 60 * 60 * 1000
 
 let customConfigPath: string | null = null
 let trayApi: TrayApi | null = null
-let remoteConfigTimerId: ReturnType<typeof setInterval> | null = null
+let remoteConfigTimerId: ReturnType<typeof setInterval> | undefined = undefined
 
 function clearRemoteConfigTimer() {
-  if (remoteConfigTimerId !== null) {
-    clearTimeout(remoteConfigTimerId)
-    remoteConfigTimerId = null
-  }
+  clearTimeout(remoteConfigTimerId)
+
+  remoteConfigTimerId = undefined
 }
 
-function runRemoteConfigUpdateThenScheduleNext() {
+async function runRemoteConfigUpdateThenScheduleNext() {
   const s = loadSettings()
   if (s.configSource !== CONFIG_SOURCE.REMOTE || !s.remoteConfigUrl.trim()) return
-  void fetchAndApplyRemoteConfig(s.remoteConfigUrl.trim()).then(() => {
+
+  try {
+    await fetchAndApplyRemoteConfig(s.remoteConfigUrl.trim())
+
     startRemoteConfigTimer()
-  })
+  } catch (e) {}
 }
 
 function startRemoteConfigTimer() {
   clearRemoteConfigTimer()
+
   remoteConfigTimerId = setTimeout(() => {
-    remoteConfigTimerId = null
+    clearRemoteConfigTimer()
+
     runRemoteConfigUpdateThenScheduleNext()
   }, REMOTE_CONFIG_INTERVAL_MS)
 }
 
 function getPathsWithCustom() {
   const s = loadSettings()
+
   if (s.configSource === CONFIG_SOURCE.REMOTE) return getPaths(null)
+
   return getPaths(customConfigPath)
 }
 
@@ -83,7 +86,6 @@ function isConfigPathValid(): boolean {
 const vpnDeps = {
   getWindow,
   getPaths: getPathsWithCustom,
-  isElevated,
   isDev,
   updateTrayMenu: () => {},
   onVpnStarted: () => {},
@@ -92,7 +94,9 @@ const vpnDeps = {
 
 function updateTrayMenu() {
   if (!trayApi) return
+
   const locale = loadSettings().locale
+
   const template = buildTrayMenuTemplate(locale, {
     startVpn,
     stopVpn,
@@ -100,6 +104,7 @@ function updateTrayMenu() {
     isConfigPathValid,
     vpnDeps
   })
+
   trayApi.updateMenu(template)
 }
 
@@ -107,13 +112,12 @@ vpnDeps.updateTrayMenu = updateTrayMenu
 
 void (async () => {
   await app.whenReady()
-  debugLog('app.whenReady() done')
 
   const settings = loadSettings()
-  if (app.isPackaged && (process.platform === 'win32' || process.platform === 'darwin')) {
-    const loginSettings: { openAtLogin: boolean; path?: string } = {
-      openAtLogin: settings.launchAtLogin
-    }
+
+  if (app.isPackaged && ['win32', 'darwin'].includes(process.platform)) {
+    const loginSettings: { openAtLogin: boolean; path?: string } = { openAtLogin: settings.launchAtLogin }
+
     if (process.platform === 'win32') {
       loginSettings.path = process.execPath
     }
@@ -124,14 +128,16 @@ void (async () => {
     settings,
     isDev,
     getTrayIconPath,
-    isElevated,
     getAlwaysOnTop: () => loadSettings().alwaysOnTop,
     startNetworkStatsPolling,
     stopNetworkStatsPolling,
     loadSettings,
     onReady: () => {
       const s = loadSettings()
-      if (s.autoStartVpn) setTimeout(() => startVpn(vpnDeps), 500)
+
+      if (s.autoStartVpn) {
+        setTimeout(() => startVpn(vpnDeps), 500)
+      }
     },
     onClosed: () => {
       if (trayApi) {

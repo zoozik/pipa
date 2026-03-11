@@ -27,7 +27,6 @@ export interface IpcDeps {
   vpnDeps: {
     getWindow: () => BrowserWindow | null
     getPaths: () => { singBoxPath: string; configPath: string }
-    isElevated: () => boolean
     isDev: boolean
     updateTrayMenu: () => void
     onVpnStarted?: () => void
@@ -110,6 +109,8 @@ export function registerIpc(deps: IpcDeps) {
   ipcMain.handle('config-set-source', async (_event, payload: { configSource: CONFIG_SOURCE; remoteConfigUrl?: string }) => {
     const current = loadSettings()
     const remoteConfigUrl = (payload.remoteConfigUrl || current.remoteConfigUrl).trim()
+
+    console.log('remoteConfigUrl', remoteConfigUrl);
     const next: AppSettings = {
       ...current,
       configSource: payload.configSource,

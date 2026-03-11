@@ -10,6 +10,7 @@ export function useSettings() {
 
   async function loadSettings() {
     const s = await window.app?.getSettings?.()
+    console.log(s)
     if (!s) return
     autoStartVpn.value = s.autoStartVpn
     launchAtLogin.value = s.launchAtLogin

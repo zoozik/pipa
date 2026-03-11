@@ -2,7 +2,7 @@
 import { ref, watch } from 'vue'
 import type { LogEntry } from '../composables/useVpn'
 
-const props = defineProps<{
+defineProps<{
   logLines: LogEntry[]
 }>()
 

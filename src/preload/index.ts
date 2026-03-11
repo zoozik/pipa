@@ -10,8 +10,7 @@ contextBridge.exposeInMainWorld('vpn', {
   pickConfigFile: () => ipcRenderer.invoke('vpn-pick-config-file'),
   getConfigSource: () => ipcRenderer.invoke('config-get-source'),
   setRemoteConfigUrl: (url: string) => ipcRenderer.invoke('config-set-remote-url', url),
-  setConfigSource: (payload: { configSource: string; remoteConfigUrl?: string }) =>
-    ipcRenderer.invoke('config-set-source', payload),
+  setConfigSource: (payload: { configSource: string; remoteConfigUrl?: string }) => ipcRenderer.invoke('config-set-source', payload),
   refreshRemoteConfig: () => ipcRenderer.invoke('config-refresh-remote'),
 
   onLog: (callback: (payload: { line: string; stream: string }) => void) => {
@@ -24,10 +23,6 @@ contextBridge.exposeInMainWorld('vpn', {
 
   onNetworkStats: (callback: (payload: { totalDownload: number; totalUpload: number }) => void) => {
     ipcRenderer.on('network-stats', (_event, payload) => callback(payload))
-  },
-
-  onDevElevationStatus: (callback: (payload: { elevated: boolean }) => void) => {
-    ipcRenderer.on('dev-elevation-status', (_event, payload) => callback(payload))
   }
 })
 

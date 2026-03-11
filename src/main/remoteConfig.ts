@@ -6,7 +6,6 @@ import { dirname, join } from 'path'
 import { getDefaultPaths } from './paths'
 
 const TEMP_CONFIG_NAME = 'temp_config.json'
-const CONFIG_NAME = 'config.json'
 
 function getConfigDir(): string {
   return dirname(getDefaultPaths().configPath)

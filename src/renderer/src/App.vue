@@ -23,11 +23,16 @@ const {
   remoteConfigUrl,
   remoteConfigUrlError,
   isRefreshRemoteDisabled,
+  isEditingRemoteUrl,
+  remoteConfigDraft,
   applyConfigPath,
   pickConfigFile,
   restoreOrLoadConfigPath,
   setConfigSourceLocal,
-  setConfigSourceRemote
+  setConfigSourceRemote,
+  beginEditRemoteUrl,
+  cancelEditRemoteUrl,
+  applyRemoteUrl
 } = useConfigPath()
 
 const {
@@ -83,16 +88,21 @@ onMounted(async () => {
         <ConfigPathRow
           v-model:config-path="configPath"
           v-model:remote-config-url="remoteConfigUrl"
+          v-model:remote-config-draft="remoteConfigDraft"
           :config-source="configSource"
           :config-path-valid="configPathValid"
           :config-path-error="configPathError"
           :remote-config-url-error="remoteConfigUrlError"
           :refresh-remote-disabled="isRefreshRemoteDisabled"
+          :is-editing-remote="isEditingRemoteUrl"
           @input="applyConfigPath"
           @pick-file="pickConfigFile"
           @config-source-local="setConfigSourceLocal"
           @config-source-remote="setConfigSourceRemote"
           @refresh-remote="onRefreshRemote"
+          @edit-remote="beginEditRemoteUrl"
+          @cancel-remote="cancelEditRemoteUrl"
+          @apply-remote="applyRemoteUrl"
         />
 
         <SettingsCheckboxes

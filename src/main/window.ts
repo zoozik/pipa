@@ -48,7 +48,6 @@ export interface CreateWindowOpts {
   settings: AppSettings
   isDev: boolean
   getTrayIconPath: () => string
-  isElevated: () => boolean
   getAlwaysOnTop: () => boolean
   startNetworkStatsPolling: (send: (payload: NetworkStatsPayload) => void) => void
   stopNetworkStatsPolling: () => void
@@ -61,12 +60,11 @@ export function createWindow(opts: CreateWindowOpts) {
   const {
     settings,
     isDev,
-    getTrayIconPath,
-    isElevated,
+    getTrayIconPath: _getTrayIconPath,
     getAlwaysOnTop,
     startNetworkStatsPolling,
     stopNetworkStatsPolling,
-    loadSettings,
+    loadSettings: _loadSettings,
     onReady,
     onClosed
   } = opts
@@ -116,7 +114,6 @@ export function createWindow(opts: CreateWindowOpts) {
 
   if (isDev) {
     mainWindow.webContents.once('did-finish-load', () => {
-      mainWindow?.webContents.send('dev-elevation-status', { elevated: isElevated() })
       mainWindow?.webContents.openDevTools({ mode: 'detach' })
     })
   }

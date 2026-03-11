@@ -21,11 +21,11 @@ export interface AppSettings {
 }
 
 export const DEFAULT_SETTINGS: AppSettings = {
-  autoStartVpn: false,
-  launchAtLogin: false,
+  autoStartVpn: true,
+  launchAtLogin: true,
   alwaysOnTop: false,
   locale: 'en',
-  configSource: CONFIG_SOURCE.LOCAL,
+  configSource: CONFIG_SOURCE.REMOTE,
   remoteConfigUrl: ''
 }
 
@@ -33,9 +33,8 @@ export function getSettingsPath(): string {
   return join(app.getPath('userData'), 'settings.json')
 }
 
-function normalizeConfigSource(value: unknown): CONFIG_SOURCE {
-  if (value === CONFIG_SOURCE.REMOTE || value === 'remote') return CONFIG_SOURCE.REMOTE
-  return CONFIG_SOURCE.LOCAL
+function normalizeConfigSource(value: CONFIG_SOURCE): CONFIG_SOURCE {
+  return value
 }
 
 export function loadSettings(): AppSettings {
@@ -48,13 +47,14 @@ export function loadSettings(): AppSettings {
     if (parsed.configSource) {
       out.configSource = normalizeConfigSource(parsed.configSource)
     }
+
     if (parsed.remoteConfigUrl) {
       out.remoteConfigUrl = parsed.remoteConfigUrl
     }
 
     return out
   } catch {
-    return defaults
+    return { ...defaults, configSource: CONFIG_SOURCE.REMOTE }
   }
 }
 

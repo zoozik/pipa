@@ -21,7 +21,6 @@ declare global {
       onLog: (callback: (payload: { line: string; stream: string }) => void) => void
       onStatus: (callback: (payload: { running: boolean; error?: string }) => void) => void
       onNetworkStats: (callback: (payload: { totalDownload: number; totalUpload: number }) => void) => void
-      onDevElevationStatus: (callback: (payload: { elevated: boolean }) => void) => void
     }
 
     app: {
