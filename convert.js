@@ -14,7 +14,7 @@ const url =
     .map((line) => (line.includes("/") ? line.trim() : line.trim() + "/32"));
 
   const data = {
-    version: 1,
+    version: 3,
     rules: [{ ip_cidr: lines }],
   };
 
