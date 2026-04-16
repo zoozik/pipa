@@ -1,82 +1,84 @@
 const fs = require("fs");
 const { execSync } = require("child_process");
 
-const ipwhitelist =
-  "https://github.com/hxehex/russia-mobile-internet-whitelist/raw/refs/heads/main/ipwhitelist.txt";
+const SOURCES = [
+  {
+    url: "https://github.com/hxehex/russia-mobile-internet-whitelist/raw/refs/heads/main/ipwhitelist.txt",
+    name: "ipwhitelist",
+    field: "ip_cidr",
+    transform: (line) => (line.includes("/") ? line : line + "/32"),
+  },
+  {
+    url: "https://github.com/hxehex/russia-mobile-internet-whitelist/raw/refs/heads/main/cidrwhitelist.txt",
+    name: "cidrwhitelist",
+    field: "ip_cidr",
+    transform: (line) => (line.includes("/") ? line : line + "/32"),
+  },
+  {
+    url: "https://github.com/hxehex/russia-mobile-internet-whitelist/raw/refs/heads/main/whitelist.txt",
+    name: "whitelist",
+    field: "domain_suffix",
+    transform: (line) => line, // без изменений
+  },
+];
 
-const cidrwhitelist =
-  "https://github.com/hxehex/russia-mobile-internet-whitelist/raw/refs/heads/main/cidrwhitelist.txt";
+async function loadLines(url, transform) {
+  const res = await fetch(url);
+  const text = await res.text();
 
-const whitelist =
-  "https://github.com/hxehex/russia-mobile-internet-whitelist/raw/refs/heads/main/whitelist.txt";
+  return text
+    .split(/\r?\n/)
+    .map((l) => l.trim())
+    .filter(Boolean)
+    .map(transform);
+}
+
+function buildRuleSet(lines, field) {
+  return {
+    version: 3,
+    rules: [{ [field]: lines }],
+  };
+}
+
+function compile(name) {
+  execSync(
+    `sing-box.exe rule-set compile ${name}.json -o ${name}.srs`,
+    { stdio: "inherit" }
+  );
+}
 
 (async () => {
-  const ipwhitelistRes = await fetch(ipwhitelist);
-  const ipwhitelistText = await ipwhitelistRes.text();
+  try {
+    for (const src of SOURCES) {
+      console.log(`Processing: ${src.name}`);
 
-  const ipwhitelistLines = ipwhitelistText
-    .split(/\r?\n/)
-    .filter((line) => line.trim() !== "")
-    .map((line) => (line.includes("/") ? line.trim() : line.trim() + "/32"));
+      const lines = await loadLines(src.url, src.transform);
+      const json = buildRuleSet(lines, src.field);
 
-  const ipwhitelistData = {
-    version: 3,
-    rules: [{ ip_cidr: ipwhitelistLines }],
-  };
-
-  fs.writeFileSync(
-    "ipwhitelist.json",
-    JSON.stringify(ipwhitelistData, null, 2)
-  );
-
-  execSync(
-    `sing-box.exe rule-set compile ipwhitelist.json -o ipwhitelist.srs`,
-    {
-      stdio: "inherit",
+      fs.writeFileSync(`${src.name}.json`, JSON.stringify(json, null, 2));
+      compile(src.name);
     }
-  );
 
-  const cidrwhitelistRes = await fetch(cidrwhitelist);
-  const cidrwhitelistText = await cidrwhitelistRes.text();
+    // git только если есть изменения
+    const status = execSync(`git status --porcelain`).toString();
 
-  const cidrwhitelistLines = cidrwhitelistText
-    .split(/\r?\n/)
-    .filter((line) => line.trim() !== "")
-    .map((line) => (line.includes("/") ? line.trim() : line.trim() + "/32"));
+    if (status) {
+      execSync(`git add .`, { stdio: "inherit" });
 
-  const cidrwhitelistData = {
-    version: 3,
-    rules: [{ ip_cidr: cidrwhitelistLines }],
-  };
+      try {
+        execSync(`git commit -m "auto update ${new Date().toISOString()}"`, {
+          stdio: "inherit",
+        });
+      } catch {
+        console.log("Nothing to commit");
+      }
 
-  fs.writeFileSync(
-    "cidrwhitelist.json",
-    JSON.stringify(cidrwhitelistData, null, 2)
-  );
-
-  execSync(
-    `sing-box.exe rule-set compile cidrwhitelist.json -o cidrwhitelist.srs`,
-    {
-      stdio: "inherit",
+      execSync(`git push origin main`, { stdio: "inherit" });
+      console.log("Git push done");
+    } else {
+      console.log("No changes");
     }
-  );
-
-  const whitelistRes = await fetch(whitelist);
-  const whitelistText = await whitelistRes.text();
-
-  const whitelistLines = whitelistText
-    .split(/\r?\n/)
-    .filter((line) => line.trim() !== "")
-    .map((line) => (line.includes("/") ? line.trim() : line.trim() + "/32"));
-
-  const whitelistData = {
-    version: 3,
-    rules: [{ domain_suffix: whitelistLines }],
-  };
-
-  fs.writeFileSync("whitelist.json", JSON.stringify(whitelistData, null, 2));
-
-  execSync(`sing-box.exe rule-set compile whitelist.json -o whitelist.srs`, {
-    stdio: "inherit",
-  });
+  } catch (e) {
+    console.error("Error:", e.message);
+  }
 })();
