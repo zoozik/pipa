@@ -22,12 +22,12 @@ const whitelist =
   };
 
   fs.writeFileSync(
-    "ipwhitelist.json",
+    "cidrwhitelist.json",
     JSON.stringify(cidrwhitelistData, null, 2)
   );
 
   execSync(
-    `sing-box.exe rule-set compile ipwhitelist.json -o ipwhitelist.srs`,
+    `sing-box.exe rule-set compile cidrwhitelist.json -o cidrwhitelist.srs`,
     {
       stdio: "inherit",
     }
