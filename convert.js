@@ -20,6 +20,12 @@ const SOURCES = [
     field: "domain_suffix",
     transform: (line) => line, // без изменений
   },
+  {
+    url: "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/ips/tif.txt",
+    name: "dns-blocklists",
+    field: "ip_cidr",
+    transform: (line) => line, // без изменений
+  },
 ];
 
 async function loadLines(url, transform) {
@@ -41,10 +47,9 @@ function buildRuleSet(lines, field) {
 }
 
 function compile(name) {
-  execSync(
-    `sing-box.exe rule-set compile ${name}.json -o ${name}.srs`,
-    { stdio: "inherit" }
-  );
+  execSync(`sing-box.exe rule-set compile ${name}.json -o ${name}.srs`, {
+    stdio: "inherit",
+  });
 }
 
 (async () => {
